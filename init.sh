@@ -12,7 +12,6 @@ brew cask install atom
 # Terminal Setup
 brew install zsh
 brew install node
-chsh -s /usr/local/bin/zsh
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 npm install --global pure-prompt
@@ -27,3 +26,7 @@ apm install vim-mode-plus
 rm ~/.zshrc && ln -s ~/code/dotfiles/zshrc ~/.zshrc
 rm ~/.hammerspoon/init.lua && ln -s ~/code/dotfiles/init.lua ~/.hammerspoon/init.lua
 rm ~/.atom/keymap.cson && ln -s ~/code/dotfiles/keymap.cson ~/.atom/keymap.cson
+
+# Notifies User & Switches to Zsh
+print "Elmo's init script complete. Switching to Zsh.../n"
+chsh -s /usr/local/bin/zsh
