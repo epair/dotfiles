@@ -53,4 +53,4 @@ for app in "Dock" "Finder"; do
 done
 
 # Done
-echo "Done. Note that some of these changes require a logout/restart to take effect."
+echo "MacOS setup complete. Note that some of these changes require a logout/restart to take effect."
