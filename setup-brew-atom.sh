@@ -14,7 +14,6 @@ brew cask install hammerspoon
 brew install zsh
 brew install node
 npm install --global pure-prompt
-hyper install hyper-snazzy
 
 # Atom Setup
 apm install file-icons
@@ -23,7 +22,7 @@ apm install vim-mode-plus
 # Setup Symlinks to dotfiles
 
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
-ln -s ~/code/dotfiles/init.lua ~/.hammerspoon/init.lua
+mkdir ~/.hammerspoon && ln -s ~/code/dotfiles/init.lua ~/.hammerspoon/init.lua
 ln -s ~/code/dotfiles/keymap.cson ~/.atom/keymap.cson
 
 # Notifies User
