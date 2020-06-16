@@ -14,4 +14,6 @@ brew cask install hammerspoon
 brew install defaultbrowser
 defaultbrowser chrome
 
+brew install dockutils
+
 echo "Brew setup complete."
