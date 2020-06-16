@@ -3,7 +3,7 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 # Install Apps
-brew cask install chrome
+brew cask install google-chrome
 brew cask install spotify
 brew cask install hyper
 brew cask install 1password
