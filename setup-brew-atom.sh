@@ -22,9 +22,9 @@ apm install vim-mode-plus
 
 # Setup Symlinks to dotfiles
 
-rm ~/.zshrc && ln -s ~/code/dotfiles/zshrc ~/.zshrc
-rm ~/.hammerspoon/init.lua && ln -s ~/code/dotfiles/init.lua ~/.hammerspoon/init.lua
-rm ~/.atom/keymap.cson && ln -s ~/code/dotfiles/keymap.cson ~/.atom/keymap.cson
+ln -s ~/code/dotfiles/zshrc ~/.zshrc
+ln -s ~/code/dotfiles/init.lua ~/.hammerspoon/init.lua
+ln -s ~/code/dotfiles/keymap.cson ~/.atom/keymap.cson
 
 # Notifies User
 echo "Init script complete. Don't forget to install oh-my-zsh manually."
