@@ -25,6 +25,9 @@ defaults write com.apple.dock autohide-delay -float 0
 # System Preferences > Dock > Show indicators for open applications
 defaults write com.apple.dock show-process-indicators -bool true
 
+# System Preferences > Dock > Show recent applications in Dock
+defaults write com.apple.dock show-recents -bool false
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # System Preferences > Trackpad > Tap to click
