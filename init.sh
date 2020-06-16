@@ -8,6 +8,7 @@ brew cask install spotify
 brew cask install hyper
 brew cask install 1password
 brew cask install atom
+brew cask install hammerspoon
 
 # Terminal Setup
 brew install zsh
