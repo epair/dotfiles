@@ -13,3 +13,5 @@ brew cask install hammerspoon
 # Makes chrome default browser
 brew install defaultbrowser
 defaultbrowser chrome
+
+echo "Brew setup complete."
