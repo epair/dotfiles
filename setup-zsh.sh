@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # Terminal Setup
-brew install zsh
 brew install node
 npm install --global pure-prompt
 
