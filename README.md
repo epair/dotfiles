@@ -2,7 +2,8 @@
 
 ### Elmo's configurations
 
-To install everything, copy-paste the following to your terminal, line-by-line:
+To install everything, copy-paste the following to your terminal:
+(also available in a gist: https://gist.github.com/elmo-p/4d864166568046691911bc37c0d59af8)
 
 ```
 xcode-select --install
