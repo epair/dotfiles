@@ -2,10 +2,13 @@
 
 ### Elmo's configurations
 
-Don't forget to install oh-my-zsh and switch default terminal:
+To install everything, copy-paste the following to your terminal, line-by-line:
 
 ```
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-chsh -s /usr/local/bin/zsh
+xcode-select --install
+mkdir ~/code && cd ~/code
+git clone git@github.com:elmo-p/dotfiles.git
+cd ..
+chmod +x ~/code/dotfiles/init.sh
+source ~/code/dotfiles/init.sh
 ```
