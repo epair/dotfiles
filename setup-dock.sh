@@ -30,7 +30,6 @@ echo "Dock editing complete. Resetting dock..."
 # Kill Dock to reset & show changes
 killall cfprefsd 2>&1
 killall Dock 2>&1
-exit 0
 fi
 
 echo "Nothing was changed."
