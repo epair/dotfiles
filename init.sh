@@ -8,5 +8,6 @@ source ~/code/dotfiles/setup-dock.sh
 source ~/code/dotfiles/setup-atom.sh
 source ~/code/dotfiles/setup-zsh.sh
 source ~/code/dotfiles/setup-symlinks.sh
+source ~/code/dotfiles/setup-github.sh
 
 echo "Setup complete."
