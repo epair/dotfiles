@@ -1,0 +1,156 @@
+set autowrite                   " Automatically :write before running commands
+set number                      " Display line numbers beside buffer
+set nocompatible                " Don't maintain compatibilty with Vi.
+set noswapfile
+set hidden                      " Allow buffer change w/o saving
+set lazyredraw                  " Don't update while executing macros
+set backspace=indent,eol,start  " Sane backspace behavior
+set history=1000                " Remember last 1000 commands
+set scrolloff=4                 " Keep at least 4 lines below cursor
+set noshowmode                  " Don't show --INSERT--
+
+" Display extra whitespace
+set list listchars=tab:»·,trail:·,nbsp:·
+
+" Use one space, not two, after punctuation.
+set nojoinspaces
+
+" Make it obvious where 80 characters is
+set textwidth=80
+set colorcolumn=+1
+
+augroup vimrcEx
+  autocmd!
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it for commit messages, when the position is invalid, or when
+  " inside an event handler (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+
+  " Set syntax highlighting for specific file types
+  autocmd BufRead,BufNewFile *.md set filetype=markdown
+  autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
+  autocmd BufRead,BufNewFile aliases.local,zshrc.local,*/zsh/configs/* set filetype=sh
+  autocmd BufRead,BufNewFile gitconfig.local set filetype=gitconfig
+  autocmd BufRead,BufNewFile tmux.conf.local set filetype=tmux
+  autocmd BufRead,BufNewFile vimrc.local set filetype=vim
+augroup END
+
+" Required for matchit and vim-textobj-rubyblock
+if has("autocmd")
+  filetype indent plugin on
+endif
+
+" Activates matchit plugin
+runtime macros/matchit.vim
+
+" Automatic installation of vim-plug https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin()
+
+Plug 'vim-ruby/vim-ruby'
+Plug 'kana/vim-textobj-user'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-rake'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'vim-test/vim-test'
+Plug 'christoomey/vim-run-interactive'
+Plug 'pbrisbin/vim-mkdir'
+Plug 'itchyny/lightline.vim'
+Plug 'joshdick/onedark.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'alvan/vim-closetag'
+Plug 'BlakeWilliams/vim-pry'
+
+call plug#end()
+
+" These are the file extensions where vim-closetag is enabled
+let g:closetag_filenames = '*.html,*.html.erb,*.jsx'
+
+" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in fzf for listing files. Lightning fast and respects .gitignore
+  let $FZF_DEFAULT_COMMAND = 'ag --literal --files-with-matches --nocolor --hidden -g ""'
+
+  if !exists(":Ag")
+    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+    nnoremap \ :Ag<SPACE>
+  endif
+endif
+
+" Set colorscheme
+colo onedark
+
+" Use the space key as our leader
+let mapleader = "\<Space>"
+
+" Switch between the last two files
+nnoremap <Leader><Leader> <C-^>
+
+" Insert binding.pry
+nmap <leader>d :call pry#insert()<cr>
+
+" Toggle NERDTree
+nnoremap <leader>n :NERDTreeFocus<CR>
+
+" Map Ctrl-s to write the file
+nmap <C-s> :w<cr>
+
+" Split edit your vimrc. Type space, r, c in sequence to trigger
+nmap <leader>rc :sp $MYVIMRC<cr>
+
+" Source (reload) your vimrc. Type space, s, o in sequence to trigger
+nmap <leader>so :source $MYVIMRC<cr>
+
+" Install Plugins
+nmap <leader>plug :PlugInstall<cr>
+
+" Run commands that require an interactive shell
+nnoremap <Leader>r :RunInInteractiveShell<Space>
+
+" Mappings for vim-test
+nnoremap <silent> <leader>t :TestFile<CR>
+nnoremap <silent> <leader>s :TestNearest<CR>
+nnoremap <silent> <leader>l :TestLast<CR>
+nnoremap <silent> <leader>a :TestSuite<CR>
+nnoremap <silent> <leader>gt :TestVisit<CR>
+
+" Quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+" Map Ctrl + p to open fuzzy find (FZF)
+nnoremap <c-p> :Files<cr>
+
+" Replace all instances of highlighted text with new text
+vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
+
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
+
+imap jk <esc>:w<cr>
+imap kj <esc>:w<cr>
