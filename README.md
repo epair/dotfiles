@@ -1,15 +1,11 @@
 # dotfiles
 
-### Elmo's configurations
+### Emmett's configurations
 
-To install everything, copy-paste the following to your terminal:
-(also available in a gist: https://gist.github.com/elmo-p/4d864166568046691911bc37c0d59af8)
+chmod +x ~/code/dotfiles/setup-brew.sh ~/code/dotfiles/setup-atom.sh ~/code/dotfiles/setup-github.sh ~/code/dotfiles/setup-macos.sh ~/code/dotfiles/setup-symlinks.sh ~/code/dotfiles/setup-zsh.sh  ~/code/dotfiles/setup-dock.sh
 
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-mkdir ~/code && cd ~/code
-git clone https://github.com/elmo-p/dotfiles.git
-cd ..
-chmod +x ~/code/dotfiles/init.sh
-source ~/code/dotfiles/init.sh
-```
+source ~/code/dotfiles/setup-brew.sh
+source ~/code/dotfiles/setup-atom.sh
+source ~/code/dotfiles/setup-zsh.sh
+source ~/code/dotfiles/setup-symlinks.sh
+source ~/code/dotfiles/setup-github.sh
