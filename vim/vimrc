@@ -78,9 +78,13 @@ Plug 'itchyny/lightline.vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'preservim/nerdtree'
+Plug 'preservim/nerdtree' |
+            \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+            \ Plug 'PhilRunninger/nerdtree-visual-selection' |
+            \ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'alvan/vim-closetag'
 Plug 'BlakeWilliams/vim-pry'
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
