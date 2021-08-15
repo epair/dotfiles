@@ -75,7 +75,7 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'christoomey/vim-run-interactive'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'itchyny/lightline.vim'
-Plug 'joshdick/onedark.vim'
+Plug 'lifepillar/vim-solarized8'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
@@ -102,7 +102,9 @@ if executable('ag')
 endif
 
 " Set colorscheme
-colo onedark
+set termguicolors
+set background=dark
+colorscheme solarized8
 
 " Use the space key as our leader
 let mapleader = "\<Space>"
