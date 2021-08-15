@@ -185,8 +185,8 @@ vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 set splitbelow
 set splitright
 
-imap jk <esc>:w<cr>
-imap kj <esc>:w<cr>
+imap jk <esc>
+imap kj <esc>
 
 " use <tab> for trigger completion and navigate to the next complete item
 function! s:check_back_space() abort
