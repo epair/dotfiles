@@ -1,5 +1,7 @@
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
+eval "$(zoxide init zsh --cmd cd)"
+
 eval "$(rbenv init -)"
 # Prevent installation bug: https://github.com/ohmyzsh/ohmyzsh/issues/6835
 ZSH_DISABLE_COMPFIX=true
@@ -19,4 +21,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Enables Pure theme https://github.com/sindresorhus/pure
 autoload -U promptinit; promptinit
+zstyle :prompt:pure:git:stash show yes
 prompt pure
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
