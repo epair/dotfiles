@@ -21,4 +21,5 @@ source $ZSH/oh-my-zsh.sh
 
 # Enables Pure theme https://github.com/sindresorhus/pure
 autoload -U promptinit; promptinit
+zstyle :prompt:pure:git:stash show yes
 prompt pure
