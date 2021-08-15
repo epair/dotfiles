@@ -2,12 +2,63 @@
 
 ### Emmett's configurations
 
-```
-chmod +x ~/code/dotfiles/setup-brew.sh ~/code/dotfiles/setup-atom.sh ~/code/dotfiles/setup-github.sh ~/code/dotfiles/setup-macos.sh ~/code/dotfiles/setup-symlinks.sh ~/code/dotfiles/setup-zsh.sh  ~/code/dotfiles/setup-dock.sh
+New Computer Setup Steps:
 
-source ~/code/dotfiles/setup-brew.sh
-source ~/code/dotfiles/setup-atom.sh
-source ~/code/dotfiles/setup-zsh.sh
+Always check installation instructions from current library site<br>
+Installation methods change more frequently than I use a new computer
+
+Don't forget to change CAPS-LOCK to CTRL
+
+1. Install [Homebrew](https://brew.sh/):
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+2. Install [Oh-My-Zsh](https://ohmyz.sh/)
+```
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended || true
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
+
+3. Install brew formula
+
+```
+# Run these individually and follow setup steps:
+brew install pure
+brew install neovim
+brew install fzf
+brew install zoxide
+```
+
+4. Setup [Github SSH
+   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+
+5. Clone this repo
+
+6. Setup symlinks to dotfiles:
+To make symlink config files to dotfiles directory:
+
+```
+chmod +x ~/code/dotfiles/setup-symlinks.sh
 source ~/code/dotfiles/setup-symlinks.sh
-source ~/code/dotfiles/setup-github.sh
+```
+
+7. Setup Nvim/Vim Plugins
+- Run :PlugInstall
+- Run :checkhealth (nvim)
+
+Apps to install:
+- Chrome
+- Spotify
+- 1password
+- hammerspoon
+- iterm
+
+Can install via brew:
+```
+brew cask install google-chrome
+brew cask install spotify
+brew cask install iterm
+brew cask install 1password
+brew cask install hammerspoon
 ```
