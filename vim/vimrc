@@ -163,7 +163,7 @@ nmap <leader>plug :PlugInstall<cr>
 nnoremap <Leader>r :RunInInteractiveShell<Space>
 
 " Mappings for vim-test
-nnoremap <silent> <leader>t :TestFile<CR>
+nnoremap <silent> <leader>f :TestFile<CR>
 nnoremap <silent> <leader>s :TestNearest<CR>
 nnoremap <silent> <leader>l :TestLast<CR>
 nnoremap <silent> <leader>a :TestSuite<CR>
