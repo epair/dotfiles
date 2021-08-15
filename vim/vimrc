@@ -150,8 +150,8 @@ nnoremap <leader>n :NERDTreeFocus<CR>
 " Map Ctrl-s to write the file
 nmap <C-s> :w<cr>
 
-" Split edit your vimrc. Type space, r, c in sequence to trigger
-nmap <leader>rc :sp $MYVIMRC<cr>
+" Split edit this file. Type space, r, c in sequence to trigger
+nmap <leader>rc :sp ~/code/dotfiles/vim/vimrc<cr>
 
 " Source (reload) your vimrc. Type space, s, o in sequence to trigger
 nmap <leader>so :source $MYVIMRC<cr>
@@ -209,3 +209,25 @@ nmap <silent> gr <Plug>(coc-references)
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+if has('nvim')
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap <A-[> <Esc>
+
+  tnoremap <A-h> <C-\><C-n><C-w>h
+  tnoremap <A-j> <C-\><C-n><C-w>j
+  tnoremap <A-k> <C-\><C-n><C-w>k
+  tnoremap <A-l> <C-\><C-n><C-w>l
+
+  " No line numbers in terminal buffers
+  autocmd TermOpen * setlocal nonumber norelativenumber
+
+  " Opens temporary split window with matches for substitution
+  set inccommand=split
+
+  " Exit terminal mode, paste specified register, switch to terminal mode
+  tnoremap <expr> <A-r> '<C-\><C-n>"'.nr2char(getchar()).'pi'
+
+  command! -nargs=* T split | terminal <args>
+  command! -nargs=* VT vsplit | terminal <args>
+endif
