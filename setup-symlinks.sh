@@ -9,5 +9,7 @@ rm ~/.config/nvim/init.vim
 ln -s ~/code/dotfiles/nvim ~/.config/nvim/init.vim
 rm ~/.gitconfig
 ln -s ~/code/dotfiles/gitconfig ~/.gitconfig
+ln -s ~/code/dotfiles/gitignore ~/.gitignore
+ln -s ~/code/dotfiles/git_template ~/.git_template
 
 echo "Symlink setup complete."
