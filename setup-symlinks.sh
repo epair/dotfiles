@@ -11,5 +11,6 @@ rm ~/.gitconfig
 ln -s ~/code/dotfiles/gitconfig ~/.gitconfig
 ln -s ~/code/dotfiles/gitignore ~/.gitignore
 ln -s ~/code/dotfiles/git_template ~/.git_template
+ln -s ~/code/dotfiles/bin ~/bin
 
 echo "Symlink setup complete."

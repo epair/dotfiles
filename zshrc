@@ -25,3 +25,5 @@ zstyle :prompt:pure:git:stash show yes
 prompt pure
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+PATH=$PATH:$HOME/bin
