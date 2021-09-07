@@ -12,6 +12,7 @@
   rebase = false
 [alias]
   co = checkout
+  mup = !git checkout main && git pull && git checkout -
 [fetch]
   prune = true
 [push]
