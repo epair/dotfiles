@@ -235,6 +235,14 @@ if has('nvim')
   command! -nargs=* VT vsplit | terminal <args>
 endif
 
+" Vim wiki
+command! Diary VimwikiDiaryIndex
+augroup vimwikigroup
+    autocmd!
+    " automatically update links on read diary
+    autocmd BufRead,BufNewFile diary.wiki VimwikiDiaryGenerateLinks
+augroup end
+
 " Using :BD opens a list of current buffers. Pressing enter on one will close
 " it
 function! s:list_buffers()
