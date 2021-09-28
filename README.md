@@ -24,10 +24,24 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 ```
 # Run these individually and follow setup steps:
-brew install pure
+brew install rbenv
+rbenv install <latest>
+rbenv global <latest>
+
+brew install npm
+brew install yarn
+brew install purej
 brew install neovim
 brew install fzf
+
 brew install zoxide
+<run zoxide install commands>
+
+brew tap homebrew/cask-fonts
+brew install --cask font-hack-nerd-font
+<Change font in iterm>
+
+brew install the_silver_searcher
 ```
 
 4. Setup [Github SSH
@@ -43,9 +57,16 @@ chmod +x ~/code/dotfiles/setup-symlinks.sh
 source ~/code/dotfiles/setup-symlinks.sh
 ```
 
-7. Setup Nvim/Vim Plugins
+7. Install gems for Nvim CoC
+
+```
+gem install solargraph
+```
+
+8. Setup Nvim/Vim Plugins
 - Run :PlugInstall
 - Run :checkhealth (nvim)
+- Run :CocInstall coc-ruby
 
 Apps to install:
 - Chrome
