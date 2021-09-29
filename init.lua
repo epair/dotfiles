@@ -1,3 +1,16 @@
+hs.loadSpoon("SpoonInstall")
+
+spoon.SpoonInstall:andUse("AppLauncher", {
+  hotkeys = {
+    p = "1Password 7",
+    z = "Zoom.us",
+    c = "Google Chrome",
+    t = "iTerm",
+    s = "Slack",
+    m = "Spotify",
+  }
+})
+
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", function()
   local win = hs.window.focusedWindow()
   local f = win:frame()
