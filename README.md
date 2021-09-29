@@ -42,6 +42,8 @@ brew install --cask font-hack-nerd-font
 <Change font in iterm>
 
 brew install the_silver_searcher
+
+brew install hammerspoon --cask
 ```
 
 4. Setup [Github SSH
