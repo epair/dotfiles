@@ -4,6 +4,7 @@
 .byebug_history
 .env
 .git/
+.vimrc
 /bower_components/
 /log
 /node_modules/

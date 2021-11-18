@@ -13,6 +13,9 @@ set encoding=utf-8
 set nobackup
 set nowritebackup
 
+" Allow per-project configuration
+set exrc
+
 " Give more space for displaying messages.
 set cmdheight=2
 
@@ -289,3 +292,8 @@ function! RubocopAutocorrect()
 endfunction
 
 map <silent> <Leader>cop :call RubocopAutocorrect()<cr>
+
+" Disable unsafe commands in project-specific .vimrc; prevents :autocmd, shell
+" and write commands from being run inside project-specific .vimrc files unless
+" they're owned by you (https://andrew.stwrt.ca/posts/project-specific-vimrc/)
+set secure
