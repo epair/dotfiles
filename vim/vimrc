@@ -156,6 +156,9 @@ nnoremap <leader>n :NERDTreeFocus<CR>
 " Map Ctrl-s to write the file
 nmap <C-s> :w<cr>
 
+" Map Ctrl-x to close and write the file
+nmap <C-x> :x<cr>
+
 " Split edit this file. Type space, r, c in sequence to trigger
 nmap <leader>rc :sp ~/code/dotfiles/vim/vimrc<cr>
 
@@ -171,8 +174,11 @@ nmap <leader>h :noh<cr>
 " Open :Buffers
 nnoremap <Leader>b :Buffers<cr>
 
-" Run commands that require an interactive shell
-nnoremap <Leader>r :RunInInteractiveShell<Space>
+" Open fugitive buffer Gstatus
+nnoremap <Leader>g :G<cr>
+
+" Open fugitive buffer Commits
+nnoremap <Leader>c :Commits<cr>
 
 " Mappings for vim-test
 nnoremap <silent> <leader>f :TestFile<CR>
@@ -242,6 +248,8 @@ if has('nvim')
 
   command! -nargs=* T split | terminal <args>
   command! -nargs=* VT vsplit | terminal <args>
+
+  nnoremap <Leader>t :vsplit +term<CR>
 endif
 
 " Vim wiki
