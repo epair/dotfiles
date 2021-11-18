@@ -142,6 +142,9 @@ let g:lightline = {
       \ },
       \ }
 
+" vim-test use neovim test strategy
+let test#strategy = "neovim"
+
 " Use the space key as our leader
 let mapleader = "\<Space>"
 
