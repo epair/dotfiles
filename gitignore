@@ -5,6 +5,7 @@
 .env
 .git/
 .vimrc
+.rubocop.yml
 /bower_components/
 /log
 /node_modules/
