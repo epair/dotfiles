@@ -13,8 +13,8 @@ set encoding=utf-8
 set nobackup
 set nowritebackup
 
-" Allow per-project configuration
-set exrc
+" Use mouse in normal and visual mode (mainly for window resizing)
+set mouse=nv
 
 " Give more space for displaying messages.
 set cmdheight=2
@@ -103,7 +103,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'epair/vim-myhelp'
-Plug 'vimwiki/vimwiki'
+Plug 'chrisbra/csv.vim'
 
 call plug#end()
 
@@ -158,7 +158,8 @@ nnoremap <Leader><Leader> <C-^>
 nmap <leader>d :call pry#insert()<cr>
 
 " Toggle NERDTree
-nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <leader>n :NERDTreeToggle<CR>
+nnoremap <leader>nf :NERDTreeFind<CR>
 
 " Map Ctrl-s to write the file
 nmap <C-s> :w<cr>
@@ -185,7 +186,7 @@ nnoremap <Leader>b :Buffers<cr>
 nnoremap <Leader>g :G<cr>
 
 " Open fugitive buffer Commits
-nnoremap <Leader>c :Commits<cr>
+" nnoremap <Leader>c :Commits<cr>
 
 " Mappings for vim-test
 nnoremap <silent> <leader>f :TestFile<CR>
@@ -235,6 +236,9 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
+
+let g:neoterm_default_mod = ":botright"
+
 if has('nvim')
   tnoremap <Esc> <C-\><C-n>
   tnoremap <A-[> <Esc>
@@ -257,15 +261,9 @@ if has('nvim')
   command! -nargs=* VT vsplit | terminal <args>
 
   nnoremap <Leader>t :vsplit +term<CR>
+  nnoremap <Leader>s :T ./bin/rails s<CR>
+  nnoremap <Leader>c :T ./bin/docker/console<CR>
 endif
-
-" Vim wiki
-command! Diary VimwikiDiaryIndex
-augroup vimwikigroup
-    autocmd!
-    " automatically update links on read diary
-    autocmd BufRead,BufNewFile diary.wiki VimwikiDiaryGenerateLinks
-augroup end
 
 " Using :BD opens a list of current buffers. Pressing enter on one will close
 " it
@@ -293,7 +291,19 @@ endfunction
 
 map <silent> <Leader>cop :call RubocopAutocorrect()<cr>
 
-" Disable unsafe commands in project-specific .vimrc; prevents :autocmd, shell
-" and write commands from being run inside project-specific .vimrc files unless
-" they're owned by you (https://andrew.stwrt.ca/posts/project-specific-vimrc/)
-set secure
+" function! DockerTransform(cmd) abort
+"   let cmds = split(a:cmd)
+"   if len(cmds) > 2
+"     let file = cmds[-1]
+"     echo "Running test file " . file
+"     return "bin/docker/test-single " . file
+"   else
+"     echo "Running entire test suite. <Ctrl-C> to quit."
+"     return 'bin/docker/test'
+"   endif
+" endfunction
+
+" let g:test#custom_transformations = {'docker': function('DockerTransform')}
+" let g:test#transformation = 'docker'
+"
+"
