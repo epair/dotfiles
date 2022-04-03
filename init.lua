@@ -11,7 +11,7 @@ spoon.SpoonInstall:andUse("AppLauncher", {
   }
 })
 
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", function()
+hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "Left", function()
   local win = hs.window.focusedWindow()
   local f = win:frame()
   local screen = win:screen()
@@ -24,7 +24,7 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", function()
   win:setFrame(f)
 end)
 
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Right", function()
+hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "Right", function()
   local win = hs.window.focusedWindow()
   local f = win:frame()
   local screen = win:screen()
