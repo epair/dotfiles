@@ -104,6 +104,8 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'epair/vim-myhelp'
 Plug 'chrisbra/csv.vim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'romgrk/barbar.nvim'
 
 call plug#end()
 
@@ -305,5 +307,8 @@ map <silent> <Leader>cop :call RubocopAutocorrect()<cr>
 
 " let g:test#custom_transformations = {'docker': function('DockerTransform')}
 " let g:test#transformation = 'docker'
-"
-"
+
+" barbar.vim mappings for buffer bar
+nnoremap <silent> <C-,> <Cmd>BufferPrevious<CR>
+nnoremap <silent> <C-.> <Cmd>BufferNext<CR>
+nnoremap <silent> <C-c> <Cmd>BufferClose<CR>
