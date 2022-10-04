@@ -1,6 +1,6 @@
 # This is Git's per-user configuration file.
 [user]
-  email = elpair@gmail.com
+  email = emmett.pair@postie.com
   name = Emmett Pair
 [init]
   defaultBranch = main
