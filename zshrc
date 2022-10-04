@@ -31,3 +31,10 @@ prompt pure
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 PATH=$PATH:$HOME/bin
+
+alias up="./bin/docker/up"
+alias down="./bin/docker/down"
+alias stop="./bin/docker/stop"
+alias con="./bin/docker/console"
+alias wip="gaa && gcmsg 'WIP'"
+alias WIPE="git reset --hard && git clean -fd"
