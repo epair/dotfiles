@@ -12,6 +12,7 @@ set number relativenumber       " Turn hybrid line numbers on
 set encoding=utf-8
 set nobackup
 set nowritebackup
+set nofixendofline
 
 " Use mouse in normal and visual mode (mainly for window resizing)
 set mouse=nv
@@ -70,26 +71,41 @@ endif
 
 call plug#begin()
 
+" Syntax highlighting, indenting
 Plug 'vim-ruby/vim-ruby'
+
 Plug 'kana/vim-textobj-user'
+" Depends on kana/vim-textobj-user
+" Use var to select around the ruby block
 Plug 'nelstrom/vim-textobj-rubyblock'
+
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-rake'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-endwise' " Adds end to methods automatically
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sleuth'
+
+" Test file runner
 Plug 'vim-test/vim-test'
+
+" JS sytanx highlighting
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
+
 Plug 'christoomey/vim-run-interactive'
+" Automatically creates any files that don't exist when using :edit
 Plug 'pbrisbin/vim-mkdir'
+
+" Aesthetic
 Plug 'itchyny/lightline.vim'
 Plug 'lifepillar/vim-solarized8'
+
+" CtrlP fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree' |
@@ -101,19 +117,18 @@ Plug 'BlakeWilliams/vim-pry'
 Plug 'airblade/vim-gitgutter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'epair/vim-myhelp'
 Plug 'chrisbra/csv.vim'
 Plug 'kyazdani42/nvim-web-devicons'
+" Top bar
 Plug 'romgrk/barbar.nvim'
+
+Plug 'tommcdo/vim-exchange'
 
 call plug#end()
 
 " These are the file extensions where vim-closetag is enabled
 let g:closetag_filenames = '*.html,*.html.erb,*.jsx'
-
-" these filetypes will have MarkdownPreview... commands
-let g:mkdp_filetypes = ['markdown', 'wiki']
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
