@@ -1,15 +1,3 @@
-hs.loadSpoon("SpoonInstall")
-
-spoon.SpoonInstall:andUse("AppLauncher", {
-  hotkeys = {
-    c = "Google Chrome",
-    t = "iTerm",
-    s = "Slack",
-    m = "Spotify",
-    o = "Obsidian"
-  }
-})
-
 caffeine = hs.menubar.new()
 function setCaffeineDisplay(state)
     if state then
