@@ -4,16 +4,16 @@
   name = Emmett Pair
 [init]
   defaultBranch = main
-[core]
-  editor = nvim
-	excludesFile = ~/.config/git/ignore
 [pull]
   rebase = false
-[alias]
-  co = checkout
 [fetch]
   prune = true
 [push]
   default = upstream
 [commit]
 	gpgsign = true
+[core]
+  editor = nvim
+	excludesFile = ~/.config/git/ignore
+[alias]
+  co = checkout
