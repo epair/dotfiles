@@ -13,5 +13,6 @@ vim.api.nvim_create_user_command("Format", function(args)
   require("conform").format({ async = true, lsp_format = "fallback", range = range })
 end, { range = true })
 
--- local o = vim.o
+local o = vim.o
+o.wrap = false
 -- o.cursorlineopt ='both' -- to enable cursorline!
