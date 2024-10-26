@@ -1,4 +1,5 @@
 return {
+  "mateuszwieloch/automkdir.nvim",
   {
     "stevearc/conform.nvim",
     -- event = 'BufWritePre', -- uncomment for format on save
