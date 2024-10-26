@@ -11,9 +11,7 @@ Don't forget to change CAPS-LOCK to CTRL
 - Install [Oh-My-Zsh](https://ohmyz.sh/)
 
 - Install zsh-syntax-highlinting
-```zsh
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-```
+`git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting`
 
 
 - Install brew formula
