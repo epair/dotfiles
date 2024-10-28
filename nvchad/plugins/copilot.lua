@@ -4,7 +4,12 @@ return {
   event = "InsertEnter",
   config = function()
     require("copilot").setup({
-      suggestion = { auto_trigger = true },
+      suggestion = {
+        auto_trigger = true,
+        keymap = {
+          accept = "<C-c>",
+        },
+      },
     })
   end,
 }
