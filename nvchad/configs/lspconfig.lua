@@ -17,13 +17,15 @@ for _, lsp in ipairs(servers) do
       settings = {
         solargraph = {
           diagnostics = true,
-          formatting = true,
+          formatting = false,  -- Disable LSP formatting
           completion = true,
           useBundler = true,
         },
         editor = {
           tabSize = 2,
           insertSpaces = true,
+          autoIndent = true,  -- Enable auto indentation
+          formatOnType = false  -- Disable format on type
         }
       }
     }
