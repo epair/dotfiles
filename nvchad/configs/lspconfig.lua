@@ -9,11 +9,31 @@ local nvlsp = require"nvchad.configs.lspconfig"
 
 -- lsps with default config
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-  }
+  if lsp == "solargraph" then
+    lspconfig[lsp].setup {
+      on_attach = nvlsp.on_attach,
+      on_init = nvlsp.on_init,
+      capabilities = nvlsp.capabilities,
+      settings = {
+        solargraph = {
+          diagnostics = true,
+          formatting = true,
+          completion = true,
+          useBundler = true,
+        },
+        editor = {
+          tabSize = 2,
+          insertSpaces = true,
+        }
+      }
+    }
+  else
+    lspconfig[lsp].setup {
+      on_attach = nvlsp.on_attach,
+      on_init = nvlsp.on_init,
+      capabilities = nvlsp.capabilities,
+    }
+  end
 end
 
 
