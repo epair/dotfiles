@@ -35,6 +35,10 @@ set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 set('i', 'jk', '<Esc>')
 set('i', 'kj', '<Esc>')
 
+set('n', '<leader>g', '<CMD>Neogit<CR>', { desc = 'Open Neogit' })
+
+set('n', '<leader>x', '<CMD>source %<CR>', { desc = 'Source current file' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
