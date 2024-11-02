@@ -6,6 +6,12 @@
 -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
 return {
+  {
+    'nvim-telescope/telescope-frecency.nvim',
+    config = function()
+      require('telescope').load_extension 'frecency'
+    end,
+  },
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
