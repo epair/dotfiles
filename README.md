@@ -4,21 +4,31 @@ New Computer Setup:
 
 Always check current installation instructions.
 
-Don't forget to change CAPS-LOCK to CTRL
-
-- Install [Homebrew](https://brew.sh/):
-
-- Install [Oh-My-Zsh](https://ohmyz.sh/)
-
-- Install zsh-syntax-highlinting
-`git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting`
-
-
-- Install brew formula
+- Setup [Github SSH
+   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- Clone this repo
+- Install libraries:
 
 ```zsh
+https://brew.sh/
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+https://ohmyz.sh/
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+https://github.com/zsh-users/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+brew install --cask google-chrome
+brew install --cask spotify
+brew install --cask 1password
+
 # https://wezfurlong.org/wezterm/
 brew install --cask wezterm
+
+https://github.com/romkatv/powerlevel10k
+brew install powerlevel10k
+echo "source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
 
 # Run these individually and follow setup steps:
 brew install rbenv
@@ -43,17 +53,14 @@ brew install eza
 # https://github.com/ajeetdsouza/zoxide
 brew install zoxide
 
-# https://github.com/jesseduffield/lazygit 
+# https://github.com/jesseduffield/lazygit
 brew install lazygit
 
-https://github.com/romkatv/powerlevel10k
-https://github.com/NvChad/NvChad
-```
+https://github.com/XAMPPRocky/tokei
+brew install tokei
 
-- Setup [Github SSH
-   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
-
-- Clone this repo
+https://github.com/kddnewton/tree
+brew install tree
 
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/wezterm.lua ~/.wezterm.lua
