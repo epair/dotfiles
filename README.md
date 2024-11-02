@@ -55,17 +55,11 @@ https://github.com/NvChad/NvChad
 
 - Clone this repo
 
-- Setup symlinks to dotfiles (copy/paste script)
-
-
-Apps to install:
-- Chrome
-- Spotify
-- 1password
-
-Can install via brew:
-```zsh
-brew cask install google-chrome
-brew cask install spotify
-brew cask install 1password
+ln -s ~/code/dotfiles/zshrc ~/.zshrc
+ln -s ~/code/dotfiles/wezterm.lua ~/.wezterm.lua
+ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
+ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
+ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
+ln -s ~/code/dotfiles/nvim ~/.config/nvim
+ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
 ```
