@@ -62,6 +62,10 @@ brew install tokei
 https://github.com/kddnewton/tree
 brew install tree
 
+<!--https://dotfyle.com/plugins/davidgranstrom/nvim-markdown-preview-->
+brew install pandoc
+npm install -g @compodoc/live-server
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/wezterm.lua ~/.wezterm.lua
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
