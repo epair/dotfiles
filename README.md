@@ -71,4 +71,5 @@ ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
 ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
 ln -s ~/code/dotfiles/nvim ~/.config/nvim
 ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
+ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
 ```
