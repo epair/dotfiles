@@ -4,68 +4,71 @@ New Computer Setup:
 
 Always check current installation instructions.
 
-Don't forget to change CAPS-LOCK to CTRL
-
-- Install [Homebrew](https://brew.sh/):
-
-- Install [Oh-My-Zsh](https://ohmyz.sh/)
-
-- Install zsh-syntax-highlinting
-`git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting`
-
-
-- Install brew formula
+- Setup [Github SSH
+   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- Clone this repo
+- Install libraries:
 
 ```zsh
-# https://wezfurlong.org/wezterm/
+<!--https://brew.sh/-->
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+<!--https://ohmyz.sh/-->
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+<!--https://github.com/zsh-users/zsh-syntax-highlighting-->
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+brew install --cask google-chrome
+brew install --cask spotify
+brew install --cask 1password
+
+<!--https://wezfurlong.org/wezterm/-->
 brew install --cask wezterm
 
-# Run these individually and follow setup steps:
+<!--https://github.com/romkatv/powerlevel10k-->
+brew install powerlevel10k
+echo "source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+
+<!--https://github.com/rbenv/rbenv-->
 brew install rbenv
 rbenv init
 rbenv install <latest>
 rbenv global <latest>
 
+<!--https://github.com/neovim/neovim/blob/master/INSTALL.md-->
 brew install neovim
 
-# https://github.com/junegunn/fzf
+<!--https://github.com/junegunn/fzf-->
 brew install fzf
 
-# https://github.com/BurntSushi/ripgrep
+<!--https://github.com/BurntSushi/ripgrep-->
 brew install ripgrep
 
-# https://github.com/sharkdp/bat 
+<!--https://github.com/sharkdp/bat -->
 brew install bat
 
-# https://github.com/eza-community/eza
+<!--https://github.com/eza-community/eza-->
 brew install eza
 
-# https://github.com/ajeetdsouza/zoxide
+<!--https://github.com/ajeetdsouza/zoxide-->
 brew install zoxide
 
-# https://github.com/jesseduffield/lazygit 
-brew install lazygit
+<!--https://github.com/XAMPPRocky/tokei-->
+brew install tokei
 
-https://github.com/romkatv/powerlevel10k
-https://github.com/NvChad/NvChad
-```
+<!--https://github.com/kddnewton/tree-->
+brew install tree
 
-- Setup [Github SSH
-   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+<!--https://dotfyle.com/plugins/davidgranstrom/nvim-markdown-preview-->
+brew install pandoc
+npm install -g @compodoc/live-server
 
-- Clone this repo
-
-- Setup symlinks to dotfiles (copy/paste script)
-
-
-Apps to install:
-- Chrome
-- Spotify
-- 1password
-
-Can install via brew:
-```zsh
-brew cask install google-chrome
-brew cask install spotify
-brew cask install 1password
+ln -s ~/code/dotfiles/zshrc ~/.zshrc
+ln -s ~/code/dotfiles/wezterm.lua ~/.wezterm.lua
+ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
+ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
+ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
+ln -s ~/code/dotfiles/nvim ~/.config/nvim
+ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
 ```
