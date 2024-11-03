@@ -13,5 +13,7 @@ config.font_size = 22
 
 config.font = wezterm.font("Hack Nerd Font")
 
+config.hide_tab_bar_if_only_one_tab = true
+
 -- and finally, return the configuration to wezterm
 return config

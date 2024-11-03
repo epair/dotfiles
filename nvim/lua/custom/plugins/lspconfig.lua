@@ -188,6 +188,18 @@ return {
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
+        eslint = {
+          filetypes = { 'javascript', 'typescript' },
+        },
+
+        ruby_lsp = {
+          cmd_env = { BUNDLE_GEMFILE = vim.fn.getenv 'GLOBAL_GEMFILE' },
+          cmd = { 'ruby-lsp' },
+          filetypes = { 'ruby', 'eruby' },
+          root_dir = function()
+            return vim.loop.cwd()
+          end,
+        },
 
         lua_ls = {
           -- cmd = {...},

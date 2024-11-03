@@ -64,6 +64,10 @@ brew install tree
 brew install pandoc
 npm install -g @compodoc/live-server
 
+<!--https://github.com/eslint/eslint?tab=readme-ov-file#installation-and-usage-->
+npm init
+npm init @eslint/config@latest
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/wezterm.lua ~/.wezterm.lua
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
@@ -71,4 +75,5 @@ ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
 ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
 ln -s ~/code/dotfiles/nvim ~/.config/nvim
 ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
+ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
 ```
