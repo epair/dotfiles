@@ -39,6 +39,12 @@ rbenv global <latest>
 <!--https://github.com/neovim/neovim/blob/master/INSTALL.md-->
 brew install neovim
 
+<!--https://github.com/tmux/tmux-->
+brew install tmux
+
+<!--https://github.com/tmux-plugins/tpm-->
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 <!--https://github.com/junegunn/fzf-->
 brew install fzf
 
@@ -76,4 +82,5 @@ ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
 ln -s ~/code/dotfiles/nvim ~/.config/nvim
 ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
 ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
+ln -s ~/code/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
 ```
