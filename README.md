@@ -45,6 +45,11 @@ brew install tmux
 <!--https://github.com/tmux-plugins/tpm-->
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
+<!--https://github.com/janoamaral/tokyo-night-tmux-->
+brew tap homebrew/cask-fonts
+brew install --cask font-monaspace-nerd-font font-noto-sans-symbols-2
+brew install bash bc coreutils gawk gh glab gsed jq nowplaying-cli
+
 <!--https://github.com/junegunn/fzf-->
 brew install fzf
 
