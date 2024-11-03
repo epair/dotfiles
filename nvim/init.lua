@@ -41,6 +41,8 @@ What is Kickstart?
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
 
+]]
+--
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
