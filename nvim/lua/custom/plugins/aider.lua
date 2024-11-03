@@ -8,14 +8,14 @@ return {
   end,
   keys = {
     {
-      '<leader>oa',
+      '<leader>ao',
       function()
         require('aider').AiderOpen()
       end,
       desc = 'Aider Open',
     },
     {
-      '<leader>ob',
+      '<leader>ab',
       function()
         require('aider').AiderBackground()
       end,

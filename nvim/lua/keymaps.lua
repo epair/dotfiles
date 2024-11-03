@@ -37,7 +37,8 @@ set('i', 'kj', '<Esc>')
 
 set('n', '<leader>g', '<CMD>Neogit<CR>', { desc = 'Open Neogit' })
 
-set('n', '<leader>x', '<CMD>source %<CR>', { desc = 'Source current file' })
+set('n', '<leader>x', '<CMD>q<CR>', { desc = '[C]lose current buffer' })
+set('n', '<C-s>', '<CMD>w<CR>', { desc = '[S]ave current buffer' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
