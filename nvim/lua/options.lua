@@ -62,6 +62,9 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Save on exit
+vim.opt.autowriteall = true
+
 -- Disable line numbers in terminal mode
 vim.api.nvim_create_autocmd('TermOpen', {
   callback = function()
