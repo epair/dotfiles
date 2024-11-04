@@ -40,6 +40,13 @@ set('n', '<leader>g', '<CMD>Neogit<CR>', { desc = 'Open Neogit' })
 set('n', '<leader>x', '<CMD>q<CR>', { desc = '[C]lose current buffer' })
 set('n', '<C-s>', '<CMD>w<CR>', { desc = '[S]ave current buffer' })
 
+-- These mappings control the size of splits (height/width)
+set('n', '<M-,>', '<C-w>5<')
+set('n', '<M-.>', '<C-w>5>')
+set('n', '<M-j>', '<C-w>-')
+set('n', '<M-k>', '<C-w>+')
+set('n', '<M-e>', '<C-w>=')
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
