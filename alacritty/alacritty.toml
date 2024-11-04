@@ -22,6 +22,3 @@ bold_italic.family = "Hack Nerd Font"
 [general]
 live_config_reload = true
 import = ["~/.config/alacritty/theme.toml"]
-
-[terminal]
-shell.program = "/bin/zsh"
