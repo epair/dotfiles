@@ -1,0 +1,4 @@
+[[session]]
+name = "tmux config"
+path = "~/code/dotfiles"
+startup_command = "nvim tmux/tmux.conf"

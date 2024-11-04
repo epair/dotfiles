@@ -79,6 +79,9 @@ npm install -g @compodoc/live-server
 npm init
 npm init @eslint/config@latest
 
+<!--https://github.com/joshmedeski/sesh-->
+brew install joshmedeski/sesh/sesh
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
@@ -88,4 +91,5 @@ ln -s ~/code/dotfiles/nvim ~/.config/nvim
 ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
 ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
 ln -s ~/code/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
+ln -s ~/code/dotfiles/sesh/sesh.toml ~/.config/sesh/sesh.toml
 ```
