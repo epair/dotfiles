@@ -35,6 +35,13 @@ rbenv init
 rbenv install <latest>
 rbenv global <latest>
 
+<!--https://github.com/pyenv/pyenv-->
+brew install pyenv
+pyenv install 3.12
+
+<!--https://aider.chat/docs/install.html-->
+python -m pip install -U aider-chat
+
 <!--https://github.com/neovim/neovim/blob/master/INSTALL.md-->
 brew install neovim
 
