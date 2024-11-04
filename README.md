@@ -4,8 +4,7 @@ New Computer Setup:
 
 Always check current installation instructions.
 
-- Setup [Github SSH
-   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- Setup [Github SSH Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 - Clone this repo
 - Install libraries:
 
