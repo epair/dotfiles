@@ -23,8 +23,8 @@ brew install --cask google-chrome
 brew install --cask spotify
 brew install --cask 1password
 
-<!--https://wezfurlong.org/wezterm/-->
-brew install --cask wezterm
+<!--https://alacritty.org/index.html-->
+brew install --cask alacritty 
 
 <!--https://github.com/romkatv/powerlevel10k-->
 brew install powerlevel10k
@@ -80,7 +80,7 @@ npm init
 npm init @eslint/config@latest
 
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
-ln -s ~/code/dotfiles/wezterm.lua ~/.wezterm.lua
+ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
 ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
 ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
