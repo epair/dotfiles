@@ -1,0 +1,9 @@
+[[session]]
+name = "dotfiles"
+path = "~/code/dotfiles"
+startup_command = "nvim -c ':Telescope find_files'"
+
+[[session]]
+name = "brain"
+path = "~/Documents/Obsidian Vault"
+startup_command = "nvim -c ':ObsidianToday'"

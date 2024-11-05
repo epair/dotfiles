@@ -4,8 +4,7 @@ New Computer Setup:
 
 Always check current installation instructions.
 
-- Setup [Github SSH
-   Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- Setup [Github SSH Key](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 - Clone this repo
 - Install libraries:
 
@@ -35,6 +34,13 @@ brew install rbenv
 rbenv init
 rbenv install <latest>
 rbenv global <latest>
+
+<!--https://github.com/pyenv/pyenv-->
+brew install pyenv
+pyenv install 3.12
+
+<!--https://aider.chat/docs/install.html-->
+python -m pip install -U aider-chat
 
 <!--https://github.com/neovim/neovim/blob/master/INSTALL.md-->
 brew install neovim
@@ -79,6 +85,9 @@ npm install -g @compodoc/live-server
 npm init
 npm init @eslint/config@latest
 
+<!--https://github.com/joshmedeski/sesh-->
+brew install joshmedeski/sesh/sesh
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
@@ -88,4 +97,5 @@ ln -s ~/code/dotfiles/nvim ~/.config/nvim
 ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
 ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
 ln -s ~/code/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
+ln -s ~/code/dotfiles/sesh/sesh.toml ~/.config/sesh/sesh.toml
 ```
