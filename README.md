@@ -98,4 +98,8 @@ ln -s ~/code/dotfiles/aider.conf.yml ~/.aider.conf.yml
 ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
 ln -s ~/code/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
 ln -s ~/code/dotfiles/sesh/sesh.toml ~/.config/sesh/sesh.toml
+ln -s ~/code/dotfiles/bin/git-worktree.sh ~/bin/git-worktree.sh
+
+chmod +x ~/bin/git-worktree.sh
+chmod +x ~/code/dotfiles/bin/git-worktree.sh
 ```
