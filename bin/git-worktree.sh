@@ -50,15 +50,22 @@ if [ "$COMMAND" = "add" ]; then
     touch "./tmp/prs/$WORKTREE_NAME.md"
 
     zoxide add "$PWD"
+    sesh connect $WORKTREE_NAME
 
     echo "Done."
 
 elif [ "$COMMAND" = "remove" ]; then
     echo "Removing worktree and branch $BRANCH_NAME"
-    cd $PARENT_DIR
+
+    # Only cd to parent directory if we're currently in the worktree we're removing
+    if [[ "$PWD" == "$DIR"* ]]; then
+        cd $PARENT_DIR
+    fi
+
     git worktree remove $WORKTREE_NAME
     git branch -D $BRANCH_NAME
     zoxide remove "$DIR"
+    tmux kill-session -t $WORKTREE_NAME
     echo "Done."
 else
     echo "Error: Invalid command. Use 'add' or 'remove'"
