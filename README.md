@@ -91,6 +91,9 @@ brew install joshmedeski/sesh/sesh
 <!--https://spacelauncherapp.com/-->
 brew install --cask spacelauncher
 
+<!--https://github.com/nikitabobko/AeroSpace-->
+brew install --cask nikitabobko/tap/aerospace
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
@@ -102,6 +105,7 @@ ln -s ~/code/dotfiles/git/Gemfile ~/.config/git/global/Gemfile
 ln -s ~/code/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
 ln -s ~/code/dotfiles/sesh/sesh.toml ~/.config/sesh/sesh.toml
 ln -s ~/code/dotfiles/bin/git-worktree.sh ~/bin/git-worktree.sh
+ln -s ~/code/dotfiles/aerospace/aerospace.toml ~/.aerospace.toml
 
 chmod +x ~/bin/git-worktree.sh
 chmod +x ~/code/dotfiles/bin/git-worktree.sh
