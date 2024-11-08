@@ -96,7 +96,6 @@ brew install --cask nikitabobko/tap/aerospace
 
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
-ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
 ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
 ln -s ~/code/dotfiles/git/gitignore ~/.config/git/ignore
 ln -s ~/code/dotfiles/nvim ~/.config/nvim
