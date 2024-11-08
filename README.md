@@ -88,6 +88,9 @@ npm init @eslint/config@latest
 <!--https://github.com/joshmedeski/sesh-->
 brew install joshmedeski/sesh/sesh
 
+<!--https://spacelauncherapp.com/-->
+brew install --cask spacelauncher
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
 ln -s ~/code/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
