@@ -94,6 +94,9 @@ brew install --cask spacelauncher
 <!--https://github.com/nikitabobko/AeroSpace-->
 brew install --cask nikitabobko/tap/aerospace
 
+<!--https://www.raycast.com/-->
+brew install --cask raycast
+
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/alacritty ~/.config/alacritty
 ln -s ~/code/dotfiles/git/gitconfig ~/.gitconfig
