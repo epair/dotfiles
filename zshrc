@@ -141,7 +141,7 @@ function sesh-sessions() {
   }
 }
 
-zle     -N             sesh-sessions
-bindkey -M emacs '\e^s' sesh-sessions
-bindkey -M vicmd '\e^s' sesh-sessions
-bindkey -M viins '\e^s' sesh-sessions
+zle     -N            sesh-sessions
+bindkey -M emacs '^s' sesh-sessions
+bindkey -M vicmd '^s' sesh-sessions
+bindkey -M viins '^s' sesh-sessions
