@@ -14,11 +14,16 @@ COMMAND=$1
 WORKTREE_NAME=$2
 BRANCH_NAME="ep/$WORKTREE_NAME"
 DIR="$PARENT_DIR/.gitworktrees/$WORKTREE_NAME"
+CURRENT_DIR=$(pwd)
 
 if [[ "$COMMAND" == "add" ]]; then
     # Create new branch
     echo "Creating branch $BRANCH_NAME"
-    git branch "$BRANCH_NAME"
+    cd $PARENT_DIR
+    git fetch
+    git pull
+    cd $CURRENT_DIR
+    git branch "$BRANCH_NAME" main
 
     # Create .gitworktrees directory if it doesn't exist
     mkdir -p "$PARENT_DIR/.gitworktrees"
