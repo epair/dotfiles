@@ -37,7 +37,7 @@ set('i', 'kj', '<Esc>')
 
 set('n', '<leader>g', '<CMD>Neogit<CR>', { desc = 'Open Neogit' })
 
-set('n', '<leader>x', '<CMD>q<CR>', { desc = '[C]lose current buffer' })
+set('n', '<leader>x', '<CMD>bd<CR>', { desc = '[C]lose current buffer' })
 set('n', '<C-s>', '<CMD>w<CR>', { desc = '[S]ave current buffer' })
 
 -- These mappings control the size of splits (height/width)
