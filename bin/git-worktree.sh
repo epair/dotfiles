@@ -3,20 +3,19 @@
 PROJECT_NAME="letterpress-app"
 PARENT_DIR="$HOME/code/postie/letterpress-app"
 
-# Check if command and branch name arguments are provided
-if (( $# != 2 )); then
-    echo "Error: Both command and branch name arguments are required"
-    echo "Usage: $0 <add|remove> <branch-name>"
+# Check if at least one argument is provided
+if (( $# < 1 )); then
+    echo "Usage: $0 <add|remove|list|ls> [branch-name] [ls-options]"
     exit 1
 fi
 
 COMMAND=$1
-WORKTREE_NAME=$2
+WORKTREE_NAME=${2:-}  # Use empty string if not provided
 BRANCH_NAME="ep/$WORKTREE_NAME"
 DIR="$PARENT_DIR/.gitworktrees/$WORKTREE_NAME"
 CURRENT_DIR=$(pwd)
 
-if [[ "$COMMAND" == "add" ]]; then
+if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     # Create new branch
     echo "Creating branch $BRANCH_NAME"
     cd $PARENT_DIR
@@ -48,7 +47,7 @@ if [[ "$COMMAND" == "add" ]]; then
 
     echo "Connecting to tmux session $WORKTREE_NAME..."
     sesh connect $WORKTREE_NAME
-elif [[ "$COMMAND" == "remove" ]]; then
+elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     echo "Removing worktree and branch $BRANCH_NAME"
 
     # Only cd to parent directory if we're currently in the worktree we're removing
@@ -60,7 +59,11 @@ elif [[ "$COMMAND" == "remove" ]]; then
     git branch -D $BRANCH_NAME
     tmux kill-session -t $WORKTREE_NAME
     echo "Done."
+elif [[ "$COMMAND" == "list" ]] || [[ "$COMMAND" == "ls" ]]; then
+    # Shift away the first argument (the command)
+    shift
+    # Pass remaining arguments to ls
+    ls "$@" "$PARENT_DIR/.gitworktrees"
 else
-    echo "Error: Invalid command. Use 'add' or 'remove'"
-    exit 1
+    echo "Error: Invalid command. Use 'add', 'remove', 'list', or 'ls'"
 fi
