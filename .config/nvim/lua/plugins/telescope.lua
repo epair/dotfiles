@@ -5,13 +5,6 @@ return {
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      {
-        'prochri/telescope-all-recent.nvim',
-        dependencies = {
-          'kkharji/sqlite.lua',
-        },
-        opts = {},
-      },
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
