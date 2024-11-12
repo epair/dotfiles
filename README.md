@@ -39,6 +39,12 @@ pyenv install 3.12
 <!--https://aider.chat/docs/install.html-->
 python -m pip install -U aider-chat
 
+<!--https://github.com/moovweb/gvm-->
+<!--bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)-->
+zsh < <(curl -s -S -L https://raw.githubusercontent.com/bipinshashi/gvm/refs/heads/fix/zsh/binscripts/gvm-installer)
+gvm install go1.23.3 -B
+gvm use go1.23.3 --default
+
 <!--https://github.com/tmux-plugins/tpm-->
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
