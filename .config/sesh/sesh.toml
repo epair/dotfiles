@@ -1,7 +1,10 @@
+[default_session]
+startup_command = "nvim -c ':Telescope find_files'"
+
 [[session]]
 name = "dotfiles"
 path = "~/code/dotfiles"
-startup_command = "nvim -c ':Telescope find_files'"
+startup_command = "nvim -c ':Telescope find_files hidden=true'"
 
 [[session]]
 name = "brain"
