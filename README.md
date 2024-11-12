@@ -45,6 +45,9 @@ zsh < <(curl -s -S -L https://raw.githubusercontent.com/bipinshashi/gvm/refs/hea
 gvm install go1.23.3 -B
 gvm use go1.23.3 --default
 
+<!--https://github.com/danielmiessler/fabric-->
+go install github.com/danielmiessler/fabric@latest
+
 <!--https://github.com/tmux-plugins/tpm-->
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
