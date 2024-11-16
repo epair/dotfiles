@@ -85,7 +85,7 @@ return {
 
       -- Custom diagnostic handler
       vim.diagnostic.handlers.current_line_virt = {
-        show = function(_, bufnr, diagnostics, _)
+        show = function(_, bufnr, diagnostics, opts)
           -- Always clear existing virtual text first
           virt_handler.hide(diagnostic_ns, bufnr)
 
@@ -94,12 +94,20 @@ return {
             return
           end
 
+          local complete_opts = vim.tbl_extend('force', {
+            virtual_text = virt_options,
+            float = { source = "always" },
+            signs = true,
+            underline = true,
+            update_in_insert = false,
+          }, opts or {})
+
           pcall(
             virt_handler.show,
             diagnostic_ns,
-            bufnr,
+            bufnr or 0,  -- Ensure bufnr is never nil
             { diagnostic },
-            { virtual_text = virt_options }
+            complete_opts
           )
         end,
 
@@ -111,16 +119,17 @@ return {
 
       -- Global diagnostic configuration
       vim.diagnostic.config {
-        float = { source = "always" },
+        float = { source = true },
         signs = true,
         virtual_text = false,
         severity_sort = true,
         current_line_virt = true,
+        update_in_insert = false,
       }
 
       -- Setup diagnostic autocommands for each buffer
       local function setup_diagnostic_autocmds(bufnr)
-        local group_name = string.format("lsp_diagnostic_buffer_%d", bufnr)
+        local group_name = "lsp_diagnostic_buffer_" .. tostring(bufnr)
         local group = vim.api.nvim_create_augroup(group_name, { clear = true })
 
         -- Show diagnostic on cursor hold
@@ -129,7 +138,7 @@ return {
           buffer = bufnr,
           callback = function()
             vim.diagnostic.handlers.current_line_virt.show(
-              nil,
+              0,
               bufnr,
               current_line_diagnostics(bufnr),
               nil
@@ -142,7 +151,7 @@ return {
           group = group,
           buffer = bufnr,
           callback = function()
-            vim.diagnostic.handlers.current_line_virt.hide(nil, bufnr)
+            vim.diagnostic.handlers.current_line_virt.hide(0, bufnr)
           end,
         })
 
@@ -151,7 +160,7 @@ return {
           group = group,
           buffer = bufnr,
           callback = function()
-            vim.diagnostic.handlers.current_line_virt.hide(nil, bufnr)
+            vim.diagnostic.handlers.current_line_virt.hide(0, bufnr)
             vim.api.nvim_del_augroup_by_name(group_name)
           end,
         })
