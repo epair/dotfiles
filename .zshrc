@@ -93,16 +93,16 @@ export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
 
 # Loop through all files in the ~/.config/fabric/patterns directory
-for pattern_file in $HOME/.config/fabric/patterns/*; do
-    # Get the base name of the file (i.e., remove the directory path)
-    pattern_name=$(basename "$pattern_file")
-
-    # Create an alias in the form: alias pattern_name="fabric --pattern pattern_name"
-    alias_command="alias $pattern_name='fabric --pattern $pattern_name'"
-
-    # Evaluate the alias command to add it to the current shell
-    eval "$alias_command"
-done
+# for pattern_file in $HOME/.config/fabric/patterns/*; do
+#     # Get the base name of the file (i.e., remove the directory path)
+#     pattern_name=$(basename "$pattern_file")
+#
+#     # Create an alias in the form: alias pattern_name="fabric --pattern pattern_name"
+#     alias_command="alias $pattern_name='fabric --pattern $pattern_name'"
+#
+#     # Evaluate the alias command to add it to the current shell
+#     eval "$alias_command"
+# done
 
 yt() {
     local video_link="$1"
@@ -136,7 +136,6 @@ yt() {
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ls=eza
-alias cat=bat
 alias up="./bin/docker/up"
 alias down="./bin/docker/down"
 alias stop="./bin/docker/stop"
