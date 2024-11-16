@@ -16,15 +16,13 @@ return {
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip').filetype_extend("ruby", {"rails"})
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -102,17 +100,18 @@ return {
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
+          -- order matters - listed in priority
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = 'nvim_lsp' },
           { name = 'luasnip' },
+          { name = 'copilot' },
+          { name = 'nvim_lsp' },
           { name = 'path' },
           { name = 'buffer' },
-          { name = 'cmdline' },
-          { name = 'copilot', group_index = 1 }
+          { name = 'cmdline' }
         },
       }
       -- Use buffer source for `/` and  (if you enabled `native_menu`, this won't work anymore).
