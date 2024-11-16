@@ -40,6 +40,18 @@ return {
       luasnip.config.setup {}
 
       cmp.setup {
+        enabled = function()
+          -- disable completion in comments
+          local context = require 'cmp.config.context'
+          -- keep command mode completion enabled when cursor is in a comment
+          if vim.api.nvim_get_mode().mode == 'c' then
+            return true
+          else
+            return not context.in_treesitter_capture("comment")
+              and not context.in_syntax_group("Comment")
+          end
+        end,
+
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -47,10 +59,6 @@ return {
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
-        -- For an understanding of why these mappings were
-        -- chosen, you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
           ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -65,12 +73,6 @@ return {
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-
-          -- If you prefer more traditional completion keymaps,
-          -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
