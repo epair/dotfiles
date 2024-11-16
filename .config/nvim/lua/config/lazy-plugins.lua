@@ -11,6 +11,7 @@
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-surround', -- Mappings to easily delete, change and add surroundings (parentheses, brackets, quotes, XML tags, etc.)
+  { 'tpope/vim-rails', event = 'VimEnter' },
   'davidgranstrom/nvim-markdown-preview', -- Preview markdown files in a browser
   'sindrets/diffview.nvim', -- Single tabpage interface for easily cycling through diffs
   --
