@@ -1,7 +1,7 @@
 return {
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    event = 'VimEnter',
+    event = {'InsertEnter', 'CmdlineEnter'},
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       {
@@ -33,6 +33,7 @@ return {
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
+      {'zbirenbaum/copilot-cmp', opts = {}},
     },
     config = function()
       -- See `:help cmp`
@@ -111,6 +112,7 @@ return {
           { name = 'path' },
           { name = 'buffer' },
           { name = 'cmdline' },
+          { name = 'copilot', group_index = 1 }
         },
       }
       -- Use buffer source for `/` and  (if you enabled `native_menu`, this won't work anymore).

@@ -5,12 +5,12 @@ return {
     event = 'InsertEnter',
     config = function()
       require('copilot').setup {
-        suggestion = {
-          auto_trigger = true,
-          keymap = {
-            accept = '<Tab>',
-          },
-        },
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+        filetypes = {
+          ["*"] = true,
+          markdown = false
+        }
       }
     end,
   },
