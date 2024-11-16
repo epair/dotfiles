@@ -8,6 +8,7 @@ dynamic_padding = false
 startup_mode = "Maximized"
 option_as_alt = "Both"
 dynamic_title = false
+opacity = 0.90
 
 [window.padding]
 x = 25
