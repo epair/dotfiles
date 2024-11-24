@@ -64,6 +64,15 @@ elif [[ "$COMMAND" == "list" ]] || [[ "$COMMAND" == "ls" ]]; then
     shift
     # Pass remaining arguments to ls
     ls "$@" "$PARENT_DIR/.gitworktrees"
+elif [[ "$command" == "push" ]]; then
+    BRANCH_NAME=$(git branch --show-current)
+    WORKTREE_NAME=${BRANCH_NAME#ep/}
+    PR_TITLE="$2"
+    REVIEWERS="${3:-njm}"
+
+    git push -u origin $BRANCH_NAME
+    PR_URL=$(gh pr create --title "$PR_TITLE" --reviewer "$REVIEWERS" --body-file tmp/prs/$WORKTREE_NAME)
+    open "$PR_URL"
 else
-    echo "Error: Invalid command. Use 'add', 'remove', 'list', or 'ls'"
+    echo "Error: Invalid command. Use 'add', 'remove', 'list', 'ls', or 'push'"
 fi
