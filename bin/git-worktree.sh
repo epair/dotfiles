@@ -3,6 +3,11 @@
 PROJECT_NAME="letterpress-app"
 PARENT_DIR="$HOME/code/postie/letterpress-app"
 
+# Check if the current directory is either the letterpress-app directory or within a worktree directory
+if [[ "$PWD" != "$PARENT_DIR" && "$PWD" != "$PARENT_DIR/.gitworktrees/"* ]]; then
+    echo "Error: You must be in the $PARENT_DIR directory or one of its worktrees to run this script."
+    return 1
+fi
 # Check if at least one argument is provided
 if (( $# < 1 )); then
     echo "Usage: $0 <add|remove|list|ls|push> [branch-name] [ls-options]"
