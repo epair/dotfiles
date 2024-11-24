@@ -9,3 +9,9 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
+-- https://github.com/nvim-treesitter/nvim-treesitter/issues/2566
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "ruby" },
+  command = "setlocal indentkeys-=.",
+})
+
