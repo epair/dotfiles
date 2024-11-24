@@ -5,8 +5,8 @@ PARENT_DIR="$HOME/code/postie/letterpress-app"
 
 # Check if at least one argument is provided
 if (( $# < 1 )); then
-    echo "Usage: $0 <add|remove|list|ls> [branch-name] [ls-options]"
-    exit 1
+    echo "Usage: $0 <add|remove|list|ls|push> [branch-name] [ls-options]"
+    return 1
 fi
 
 COMMAND=$1
@@ -58,6 +58,7 @@ elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     git worktree remove $WORKTREE_NAME
     git branch -D $BRANCH_NAME
     tmux kill-session -t $WORKTREE_NAME
+    zoxide remove $DIR
     echo "Done."
 elif [[ "$COMMAND" == "list" ]] || [[ "$COMMAND" == "ls" ]]; then
     # Shift away the first argument (the command)
