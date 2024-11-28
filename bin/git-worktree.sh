@@ -71,6 +71,7 @@ elif [[ "$COMMAND" == "list" ]] || [[ "$COMMAND" == "ls" ]]; then
     # Pass remaining arguments to ls
     ls "$@" "$PARENT_DIR/.gitworktrees"
 elif [[ "$command" == "push" ]]; then
+elif [[ "$COMMAND" == "push" ]]; then
     BRANCH_NAME=$(git branch --show-current)
     WORKTREE_NAME=${BRANCH_NAME#ep/}
     PR_TITLE="$2"
