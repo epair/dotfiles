@@ -78,7 +78,7 @@ elif [[ "$COMMAND" == "push" ]]; then
     REVIEWERS="${3:-njm}"
 
     git push -u origin $BRANCH_NAME
-    PR_URL=$(gh pr create --title "$PR_TITLE" --reviewer "$REVIEWERS" --body-file tmp/prs/$WORKTREE_NAME)
+    PR_URL=$(gh pr create --title "$PR_TITLE" --reviewer "$REVIEWERS" --body-file tmp/prs/$WORKTREE_NAME.md)
     open "$PR_URL"
 else
     echo "Error: Invalid command. Use 'add', 'remove', 'list', 'ls', or 'push'"
