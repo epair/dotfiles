@@ -70,12 +70,16 @@ elif [[ "$COMMAND" == "list" ]] || [[ "$COMMAND" == "ls" ]]; then
     shift
     # Pass remaining arguments to ls
     ls "$@" "$PARENT_DIR/.gitworktrees"
-elif [[ "$command" == "push" ]]; then
 elif [[ "$COMMAND" == "push" ]]; then
     BRANCH_NAME=$(git branch --show-current)
     WORKTREE_NAME=${BRANCH_NAME#ep/}
     PR_TITLE="$2"
     REVIEWERS="${3:-njm}"
+
+    if [[ -z "$PR_TITLE" ]]; then
+      echo "Error: no PR title provided for 'push' command"
+      return 1
+    fi
 
     git push -u origin $BRANCH_NAME
     PR_URL=$(gh pr create --title "$PR_TITLE" --reviewer "$REVIEWERS" --body-file tmp/prs/$WORKTREE_NAME.md)
