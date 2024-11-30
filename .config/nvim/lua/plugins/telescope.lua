@@ -5,13 +5,6 @@ return {
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      {
-        'prochri/telescope-all-recent.nvim',
-        dependencies = {
-          'kkharji/sqlite.lua',
-        },
-        opts = {},
-      },
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
@@ -58,6 +51,31 @@ return {
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
+          file_ignore_patterns = { '.git/', 'node_modules' },
+          layout_config = {
+            height = 0.90,
+            width = 0.90,
+            preview_cutoff = 0,
+            horizontal = { preview_width = 0.60 },
+            vertical = { width = 0.55, height = 0.9, preview_cutoff = 0 },
+            prompt_position = 'top',
+          },
+          path_display = { 'smart' },
+          prompt_position = 'top',
+          prompt_prefix = ' ',
+          selection_caret = ' ',
+          sorting_strategy = 'ascending',
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--hidden',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--trim', -- add this value
+          },
           mappings = {
             i = {
               ['<C-k>'] = require('telescope.actions').move_selection_previous,
@@ -69,6 +87,39 @@ return {
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
+          },
+        },
+        pickers = {
+          buffers = {
+            prompt_prefix = '󰸩 ',
+          },
+          commands = {
+            prompt_prefix = ' ',
+            layout_config = {
+              height = 0.63,
+              width = 0.78,
+            },
+          },
+          command_history = {
+            prompt_prefix = ' ',
+            layout_config = {
+              height = 0.63,
+              width = 0.58,
+            },
+          },
+          git_files = {
+            prompt_prefix = '󰊢 ',
+            show_untracked = true,
+          },
+          find_files = {
+            prompt_prefix = ' ',
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+          },
+          live_grep = {
+            prompt_prefix = '󰱽 ',
+          },
+          grep_string = {
+            prompt_prefix = '󰱽 ',
           },
         },
       }
@@ -90,6 +141,7 @@ return {
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Git keymaps

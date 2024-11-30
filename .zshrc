@@ -128,6 +128,26 @@ export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
+# git-worktree completion
+_git_worktree_completion() {
+    local cur_word="${words[CURRENT]}"
+    local command="${words[2]}"
+
+    if [[ $CURRENT -eq 2 ]]; then
+        compadd "add" "remove" "list" "ls"
+        return
+    fi
+
+    if [[ $CURRENT -eq 3 && "$command" == "remove" ]]; then
+        local worktree_dir="$HOME/code/postie/letterpress-app/.gitworktrees"
+        if [[ -d "$worktree_dir" ]]; then
+            compadd $(ls "$worktree_dir")
+        fi
+    fi
+}
+
+compdef _git_worktree_completion git-worktree.sh
+
 # sesh config
 function sesh-sessions() {
   {

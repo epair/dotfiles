@@ -37,7 +37,8 @@ set('i', 'kj', '<Esc>')
 
 set('n', '<leader>g', '<CMD>Neogit<CR>', { desc = 'Open Neogit' })
 
-set('n', '<leader>x', '<CMD>q<CR>', { desc = '[C]lose current buffer' })
+set('n', '<leader>x', '<CMD>bd<CR>', { desc = '[C]lose current buffer' })
+set('n', '<leader>q', '<CMD>q<CR>', { desc = '[Q]uit and close nvim' })
 set('n', '<C-s>', '<CMD>w<CR>', { desc = '[S]ave current buffer' })
 
 -- These mappings control the size of splits (height/width)
@@ -47,24 +48,4 @@ set('n', '<M-j>', '<C-w>-')
 set('n', '<M-k>', '<C-w>+')
 set('n', '<M-e>', '<C-w>=')
 
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
-
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
-
--- Disable line numbers in terminal mode
-vim.api.nvim_create_autocmd('TermOpen', {
-  callback = function()
-    vim.opt_local.number = false
-  end,
-})
 -- vim: ts=2 sts=2 sw=2 et
