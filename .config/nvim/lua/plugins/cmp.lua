@@ -16,15 +16,13 @@ return {
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip').filetype_extend("ruby", {"rails"})
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -42,6 +40,18 @@ return {
       luasnip.config.setup {}
 
       cmp.setup {
+        enabled = function()
+          -- disable completion in comments
+          local context = require 'cmp.config.context'
+          -- keep command mode completion enabled when cursor is in a comment
+          if vim.api.nvim_get_mode().mode == 'c' then
+            return true
+          else
+            return not context.in_treesitter_capture("comment")
+              and not context.in_syntax_group("Comment")
+          end
+        end,
+
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -49,10 +59,6 @@ return {
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
-        -- For an understanding of why these mappings were
-        -- chosen, you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
           ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -67,12 +73,6 @@ return {
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-
-          -- If you prefer more traditional completion keymaps,
-          -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -102,17 +102,18 @@ return {
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
+          -- order matters - listed in priority
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = 'nvim_lsp' },
           { name = 'luasnip' },
+          { name = 'copilot' },
+          { name = 'nvim_lsp' },
           { name = 'path' },
           { name = 'buffer' },
-          { name = 'cmdline' },
-          { name = 'copilot', group_index = 1 }
+          { name = 'cmdline' }
         },
       }
       -- Use buffer source for `/` and  (if you enabled `native_menu`, this won't work anymore).
