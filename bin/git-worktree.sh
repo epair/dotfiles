@@ -23,10 +23,6 @@ CURRENT_DIR=$(pwd)
 if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     # Create new branch
     echo "Creating branch $BRANCH_NAME"
-    cd $PARENT_DIR
-    git fetch
-    git pull
-    cd $CURRENT_DIR
     git branch "$BRANCH_NAME" main
 
     # Create .gitworktrees directory if it doesn't exist
@@ -42,7 +38,7 @@ if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     echo "COMPOSE_PROJECT_NAME=$PROJECT_NAME" > "$DIR/.env"
 
     # Create config directory and copy application.yml from parent directory
-    cp "$PARENT_DIR/config/application.yml" "$DIR/config/."
+    cp "$PARENT_DIR/.gitworktrees/.config/application.yml" "$DIR/config/."
 
     mkdir -p "$DIR/tmp/prs"
     touch "$DIR/tmp/prs/$WORKTREE_NAME.md"
