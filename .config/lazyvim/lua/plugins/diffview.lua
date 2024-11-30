@@ -4,7 +4,7 @@ return {
   opts = {},
   keys = {
 
-    { "<leader>gD", "<cmd>DiffviewOpen<CR>", desc = "Open Diffview" },
+    { "<leader>gD", "<cmd>DiffviewOpen main<CR>", desc = "Open Diffview" },
     { "<leader>gC", "<cmd>DiffviewClose<CR>", desc = "Close Diffview" },
   },
 }
