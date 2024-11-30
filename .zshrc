@@ -81,7 +81,7 @@ plugins=(git ruby rails zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
-export GLOBAL_GEMFILE="$HOME/.config/git/global/Gemfile"
+export GLOBAL_GEMFILE="$HOME/.config/git/Gemfile"
 
 # User configuration
 
