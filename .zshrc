@@ -94,8 +94,8 @@ function sesh-sessions() {
 }
 
 zle     -N            sesh-sessions
-bindkey -M emacs '^g' sesh-sessions
-bindkey -M vicmd '^g' sesh-sessions
-bindkey -M viins '^g' sesh-sessions
+bindkey -M emacs '^t' sesh-sessions
+bindkey -M vicmd '^t' sesh-sessions
+bindkey -M viins '^t' sesh-sessions
 
 [[ -s "/Users/emmettpair/.gvm/scripts/gvm" ]] && source "/Users/emmettpair/.gvm/scripts/gvm"
