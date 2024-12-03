@@ -3,7 +3,7 @@
 
 -- Disable autoformat for files from work
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "ruby", "eruby", "javascript" },
+  pattern = { "ruby", "eruby", "javascript", "toml" },
   callback = function()
     vim.b.autoformat = false
   end,
