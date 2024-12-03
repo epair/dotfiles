@@ -53,6 +53,7 @@ alias stop="./bin/docker/stop"
 alias con="./bin/docker/console"
 alias wtree=". $HOME/bin/git-worktree.sh"
 
+eval "$(oh-my-posh init zsh)"
 
 source <(fzf --zsh)
 eval "$(zoxide init zsh --cmd cd)"
