@@ -1,4 +1,6 @@
 .git
+.gitattributes
+.git-crypt
 README.md
 .aider.tags.cache.*
 .aider.input.history
