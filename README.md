@@ -19,16 +19,6 @@ brew bundle --file <BREWFILE>
 cd dotfiles
 stow -nv . -t ~ # -n -- dry-run; -v -- verbose; -t -- target
 
-<!--https://ohmyz.sh/-->
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-<!--https://github.com/zsh-users/zsh-syntax-highlighting-->
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-<!--https://github.com/romkatv/powerlevel10k-->
-brew install powerlevel10k
-echo "source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
-
 <!--https://github.com/rbenv/rbenv-->
 rbenv init
 rbenv install <latest>
