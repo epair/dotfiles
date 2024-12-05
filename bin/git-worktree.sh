@@ -64,6 +64,7 @@ if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
 
     zoxide add "$DIR"
 
+    echo "Starting letterpress-app/$WORKTREE_NAME session..."
     sesh connect "$WORKTREE_NAME"
 elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     echo "Removing worktree and branch $BRANCH_NAME"
@@ -75,9 +76,9 @@ elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
 
     git worktree remove $WORKTREE_NAME
     git branch -D $BRANCH_NAME
-    tmux kill-session -t $WORKTREE_NAME
+    tmux kill-session -t "letterpress-app/$WORKTREE_NAME"
     zoxide remove $DIR
-    echo "Done."
+    echo "Killed session and removed from zoxide"
 elif [[ "$COMMAND" == "pr" ]]; then
     BRANCH_NAME=$(git branch --show-current)
     WORKTREE_NAME=${BRANCH_NAME#ep/}
