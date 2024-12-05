@@ -6,8 +6,8 @@ name = "dotfiles"
 path = "~/code/dotfiles"
 
 [[session]]
-name = "letterpress"
-path = "~/code/postie/letterpress-app"
+name = "letterpress-main"
+path = "~/code/postie/letterpress-app/main"
 
 [[session]]
 name = "brain"
