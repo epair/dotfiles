@@ -4,7 +4,7 @@ PROJECT_NAME="letterpress-app"
 PARENT_DIR="$HOME/code/postie/letterpress-app"
 
 # Check if the current directory is either the letterpress-app directory or within a worktree directory
-if [[ "$PWD" != "$PARENT_DIR" && "$PWD" != "$PARENT_DIR/.gitworktrees/"* ]]; then
+if [[ "$PWD" != "$PARENT_DIR" && "$PWD" != "$PARENT_DIR/"* ]]; then
     echo "Error: You must be in the $PARENT_DIR directory or one of its worktrees to run this script."
     return 1
 fi
@@ -17,7 +17,7 @@ fi
 COMMAND=$1
 WORKTREE_NAME=${2:-}  # Use empty string if not provided
 BRANCH_NAME="ep/$WORKTREE_NAME"
-DIR="$PARENT_DIR/.gitworktrees/$WORKTREE_NAME"
+DIR="$PARENT_DIR/$WORKTREE_NAME"
 CURRENT_DIR=$(pwd)
 
 if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
@@ -25,8 +25,6 @@ if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     echo "Creating branch $BRANCH_NAME"
     git branch "$BRANCH_NAME" main
 
-    # Create .gitworktrees directory if it doesn't exist
-    mkdir -p "$PARENT_DIR/.gitworktrees"
 
     # Add worktree for the new branch
     echo "Creating worktree $DIR"
@@ -37,8 +35,8 @@ if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     # Create .env file with COMPOSE_PROJECT_NAME
     echo "COMPOSE_PROJECT_NAME=$PROJECT_NAME" > "$DIR/.env"
 
-    # Create config directory and copy application.yml from parent directory
-    cp "$PARENT_DIR/.gitworktrees/.config/application.yml" "$DIR/config/."
+    # Create config directory and copy application.yml from main worktree
+    cp "$PARENT_DIR/main/config/application.yml" "$DIR/config/."
 
     mkdir -p "$DIR/tmp/prs"
     touch "$DIR/tmp/prs/$WORKTREE_NAME.md"
