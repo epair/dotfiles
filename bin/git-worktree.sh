@@ -51,10 +51,7 @@ if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     fi
 
     # Add worktree for the new branch
-    echo "Creating worktree $DIR"
     git worktree add "$DIR" "$BRANCH_NAME"
-
-    echo "Setting up worktree $WORKTREE_NAME"
 
     # Create .env file with COMPOSE_PROJECT_NAME
     echo "COMPOSE_PROJECT_NAME=$PROJECT_NAME" > "$DIR/.env"
@@ -65,11 +62,9 @@ if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     mkdir -p "$DIR/tmp/prs"
     touch "$DIR/tmp/prs/$WORKTREE_NAME.md"
 
-    echo "Adding worktree to zoxide"
     zoxide add "$DIR"
 
-    echo "Connecting to tmux session $WORKTREE_NAME..."
-    sesh connect $WORKTREE_NAME
+    sesh connect "$WORKTREE_NAME"
 elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     echo "Removing worktree and branch $BRANCH_NAME"
 
@@ -95,8 +90,8 @@ elif [[ "$COMMAND" == "push" ]]; then
     REVIEWERS="${3:-njm}"
 
     if [[ -z "$PR_TITLE" ]]; then
-      echo "Error: no PR title provided for 'push' command"
-      return 1
+        echo "Error: no PR title provided for 'push' command"
+        return 1
     fi
 
     git push -u origin $BRANCH_NAME
