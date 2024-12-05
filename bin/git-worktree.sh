@@ -38,10 +38,17 @@ DIR="$PARENT_DIR/$WORKTREE_NAME"
 CURRENT_DIR=$(pwd)
 
 if [[ "$COMMAND" == "add" ]] && [[ -n "$WORKTREE_NAME" ]]; then
-    # Create new branch
-    echo "Creating branch $BRANCH_NAME"
-    git branch "$BRANCH_NAME" main
-
+    # Check if branch exists locally
+    if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME"; then
+        echo "Branch $BRANCH_NAME already exists locally, using existing branch"
+    # Check if branch exists remotely
+    elif git show-ref --verify --quiet "refs/remotes/origin/$BRANCH_NAME"; then
+        echo "Branch $BRANCH_NAME exists remotely, fetching branch"
+        git fetch origin "$BRANCH_NAME:$BRANCH_NAME"
+    else
+        echo "Creating new branch $BRANCH_NAME"
+        git branch "$BRANCH_NAME" main
+    fi
 
     # Add worktree for the new branch
     echo "Creating worktree $DIR"
