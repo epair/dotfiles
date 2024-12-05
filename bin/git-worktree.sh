@@ -11,7 +11,7 @@ fi
 
 # Check if at least one argument is provided
 if (( $# < 1 )); then
-    echo "Usage: $0 <add|remove|push> [branch-name] [--no-prefix]"
+    echo "Usage: $0 <add|remove|pr> [branch-name] [--no-prefix]"
     return 1
 fi
 
@@ -78,20 +78,19 @@ elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
     tmux kill-session -t $WORKTREE_NAME
     zoxide remove $DIR
     echo "Done."
-elif [[ "$COMMAND" == "push" ]]; then
+elif [[ "$COMMAND" == "pr" ]]; then
     BRANCH_NAME=$(git branch --show-current)
     WORKTREE_NAME=${BRANCH_NAME#ep/}
     PR_TITLE="$2"
     REVIEWERS="${3:-njm}"
 
     if [[ -z "$PR_TITLE" ]]; then
-        echo "Error: no PR title provided for 'push' command"
+        echo "Error: no PR title provided for 'pr' command"
         return 1
     fi
 
     git push -u origin $BRANCH_NAME
-    PR_URL=$(gh pr create --title "$PR_TITLE" --reviewer "$REVIEWERS" --body-file tmp/prs/$WORKTREE_NAME.md)
-    open "$PR_URL"
+    gh pr create --title "$PR_TITLE" --reviewer "$REVIEWERS" --body-file=tmp/prs/$WORKTREE_NAME.md
 else
-    echo "Error: Invalid command. Use 'add', 'remove', or 'push'"
+    echo "Error: Invalid command. Use 'add', 'remove', or 'pr'"
 fi
