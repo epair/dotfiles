@@ -8,15 +8,32 @@ if [[ "$PWD" != "$PARENT_DIR" && "$PWD" != "$PARENT_DIR/"* ]]; then
     echo "Error: You must be in the $PARENT_DIR directory or one of its worktrees to run this script."
     return 1
 fi
+
 # Check if at least one argument is provided
 if (( $# < 1 )); then
-    echo "Usage: $0 <add|remove|list|ls|push> [branch-name] [ls-options]"
+    echo "Usage: $0 <add|remove|list|ls|push> [branch-name] [ls-options] [--no-prefix]"
     return 1
 fi
 
 COMMAND=$1
 WORKTREE_NAME=${2:-}  # Use empty string if not provided
-BRANCH_NAME="ep/$WORKTREE_NAME"
+NO_PREFIX=false
+
+# Check for --no-prefix flag
+for arg in "$@"; do
+    if [[ "$arg" == "--no-prefix" ]]; then
+        NO_PREFIX=true
+        break
+    fi
+done
+
+# Adjust branch name based on --no-prefix flag
+if $NO_PREFIX; then
+    BRANCH_NAME="$WORKTREE_NAME"
+else
+    BRANCH_NAME="ep/$WORKTREE_NAME"
+fi
+
 DIR="$PARENT_DIR/$WORKTREE_NAME"
 CURRENT_DIR=$(pwd)
 
