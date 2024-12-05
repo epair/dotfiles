@@ -18,3 +18,4 @@
 [alias]
   co = checkout
 	clone-for-worktrees = "!sh $HOME/bin/git-clone-bare-for-worktrees.sh"
+  sesh = "!sh $HOME/bin/git-worktree.sh"

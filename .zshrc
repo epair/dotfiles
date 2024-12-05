@@ -51,7 +51,6 @@ alias up="./bin/docker/up"
 alias down="./bin/docker/down"
 alias stop="./bin/docker/stop"
 alias con="./bin/docker/console"
-alias wtree=". $HOME/bin/git-worktree.sh"
 
 eval "$(oh-my-posh init zsh --config $HOME/.config/oh-my-posh/tokyonight-custom.toml)"
 
