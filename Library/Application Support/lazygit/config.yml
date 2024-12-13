@@ -1,0 +1,35 @@
+os:
+  editPreset: 'nvim-remote'
+customCommands:
+  - key: '<c-j>'
+    context: 'global'
+    description: 'Create a new worktree session'
+    prompts:
+      - type: 'input'
+        title: 'What is the new worktree session name?'
+        key: 'WorktreeName'
+        initialValue: ''
+    command: "git sesh add {{.Form.WorktreeName}}"
+    loadingText: 'Creating worktree session'
+  - key: '<c-k>'
+    context: 'global'
+    description: 'Delete a worktree session'
+    prompts:
+      - type: 'menuFromCommand'
+        title: 'Destroy Worktree Session:'
+        key: 'WorktreeName'
+        command: "git worktree list"
+        filter: '.*/(?P<repo>.*) (?P<hash>.*) (?P<branch>.*)'
+        valueFormat: '{{ .repo }}'
+        labelFormat: '{{ .repo | blue }}{{ .hash | green }}{{ .branch | green }}'
+    command: "git sesh remove {{.Form.WorktreeName}}"
+    loadingText: 'Removing worktree session'
+  # - key: '<c-l>'
+  #   context: 'global'
+  #   description: 'Publish the PR for current worktree session'
+  #   prompts:
+  #     - type: 'input'
+  #       title: 'What is the PR title?'
+  #       key: 'PRTitle'
+  #       initialValue: ''
+  #   command: "gh pr create --title '{{ .Form.PRTitle }}' --reviewer njm --body-file ./tmp/prs/{{.CheckedOutBranch}}"
