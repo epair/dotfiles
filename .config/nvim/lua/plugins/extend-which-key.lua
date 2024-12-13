@@ -2,6 +2,7 @@ return {
   "folke/which-key.nvim",
   opts = function(_, opts)
     -- completely overrides spec - these are the defaults (except for the obsidian line)
+    opts.preset = "classic"
     opts.spec = {
       {
         mode = { "n", "v" },
