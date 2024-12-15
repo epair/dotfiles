@@ -74,7 +74,7 @@ elif [[ "$COMMAND" == "remove" ]] && [[ -n "$WORKTREE_NAME" ]]; then
         cd $PARENT_DIR
     fi
 
-    git worktree remove $WORKTREE_NAME
+    git worktree remove --force $WORKTREE_NAME
     git branch -D $BRANCH_NAME
     tmux kill-session -t "letterpress-app/$WORKTREE_NAME"
     zoxide remove $DIR
