@@ -1,5 +1,5 @@
 return {
-  { "epair/neotest-minitest" },
+  { "zidhuss/neotest-minitest" },
   {
     "nvim-neotest/neotest",
     opts = {
