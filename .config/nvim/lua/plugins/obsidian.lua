@@ -8,7 +8,7 @@ return {
     "nvim-lua/plenary.nvim", -- Required
     "hrsh7th/nvim-cmp",
     "nvim-treesitter/nvim-treesitter",
-    "nvim-telescope/telescope.nvim",
+    "ibhagwan/fzf-lua",
   },
   keys = {
     { "<leader>ot", ":ObsidianToday<CR>", desc = "Today's note" },
@@ -48,7 +48,7 @@ return {
     },
 
     picker = {
-      name = "telescope.nvim",
+      name = "fzf-lua",
     },
 
     -- Optional, alternatively you can customize the frontmatter data.
