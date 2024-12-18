@@ -6,7 +6,6 @@ return {
   cmd = { "ObsidianToday", "ObsidianTomorrow", "ObsidianDailies" },
   dependencies = {
     "nvim-lua/plenary.nvim", -- Required
-    "hrsh7th/nvim-cmp",
     "nvim-treesitter/nvim-treesitter",
     "ibhagwan/fzf-lua",
   },
