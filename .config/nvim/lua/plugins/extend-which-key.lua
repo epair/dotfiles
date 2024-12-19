@@ -3,6 +3,7 @@ return {
   opts = {
     spec = {
       { "<leader>o", group = "obsidian", icon = { icon = "󰠮 " } },
+      { "<leader>m", desc = "Toggle block" },
     },
   },
 }
