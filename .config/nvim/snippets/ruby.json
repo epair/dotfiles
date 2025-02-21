@@ -1,0 +1,37 @@
+{
+  "job": {
+    "prefix": "job",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "class ${1:Foo} < ApplicationJob",
+      "\tdef perform(${2:id:})",
+      "\tend",
+      "end"
+    ]
+  },
+  "poro": {
+    "prefix": "poro pc",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "class ${1:Class}",
+      "\tdef initialize(${2:id})",
+      "\tend",
+      "end"
+    ]
+  },
+  "poro with module": {
+    "prefix": "poro module pm",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "module ${1:Module}",
+      "\tclass ${2:Class}",
+      "\t\tdef initialize(${3:id})",
+      "\t\tend",
+      "\tend",
+      "end"
+    ]
+  }
+}
