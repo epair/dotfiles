@@ -1,8 +1,8 @@
 os:
   editPreset: 'nvim-remote'
 customCommands:
-  - key: '<c-j>'
-    context: 'global'
+  - key: 'n'
+    context: 'worktrees'
     description: 'Create a new worktree session'
     prompts:
       - type: 'input'
@@ -11,18 +11,10 @@ customCommands:
         initialValue: ''
     command: "git sesh add {{.Form.WorktreeName}}"
     loadingText: 'Creating worktree session'
-  - key: '<c-k>'
-    context: 'global'
+  - key: 'd'
+    context: 'worktrees'
     description: 'Delete a worktree session'
-    prompts:
-      - type: 'menuFromCommand'
-        title: 'Destroy Worktree Session:'
-        key: 'WorktreeName'
-        command: "git worktree list"
-        filter: '.*/(?P<repo>.*) (?P<hash>.*) (?P<branch>.*)'
-        valueFormat: '{{ .repo }}'
-        labelFormat: '{{ .repo | blue }}{{ .hash | green }}{{ .branch | green }}'
-    command: "git sesh remove {{.Form.WorktreeName}}"
+    command: "git sesh remove {{.SelectedWorktree.Name}}"
     loadingText: 'Removing worktree session'
   # - key: '<c-l>'
   #   context: 'global'
