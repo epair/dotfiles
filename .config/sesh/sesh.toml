@@ -8,6 +8,7 @@ path = "~/code/dotfiles"
 [[session]]
 name = "letterpress-app/main"
 path = "~/code/postie/letterpress-app/main"
+startup_command = "git fetch && git pull"
 
 [[session]]
 name = "brain"
