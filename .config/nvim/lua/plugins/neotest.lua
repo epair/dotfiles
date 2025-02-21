@@ -1,5 +1,6 @@
 return {
   { "zidhuss/neotest-minitest" },
+  { "nvim-neotest/neotest-jest" },
   {
     "nvim-neotest/neotest",
     opts = {
@@ -15,6 +16,7 @@ return {
 
           results_path = "tmp/minitest.output",
         },
+        "neotest-jest",
       },
     },
   },
