@@ -3,5 +3,6 @@
 -- Add any additional options here
 vim.opt.relativenumber = false
 vim.opt.colorcolumn = "80"
+vim.opt.fixendofline = false
 
 vim.g.snacks_animate = false
