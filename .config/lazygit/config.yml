@@ -16,12 +16,3 @@ customCommands:
     description: 'Delete a worktree session'
     command: "git sesh remove {{.SelectedWorktree.Name}}"
     loadingText: 'Removing worktree session'
-  # - key: '<c-l>'
-  #   context: 'global'
-  #   description: 'Publish the PR for current worktree session'
-  #   prompts:
-  #     - type: 'input'
-  #       title: 'What is the PR title?'
-  #       key: 'PRTitle'
-  #       initialValue: ''
-  #   command: "gh pr create --title '{{ .Form.PRTitle }}' --reviewer njm --body-file ./tmp/prs/{{.CheckedOutBranch}}"
