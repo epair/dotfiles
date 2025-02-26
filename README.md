@@ -51,4 +51,7 @@ npm init @eslint/config@latest
 
 chmod +x ~/bin/git-worktree.sh
 chmod +x ~/code/dotfiles/bin/git-worktree.sh
+
+<!-- hammerspoon -->
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 ```
