@@ -1,20 +1,11 @@
-# Place a copy of this config to ~/.aerospace.toml
-# After that, you can edit ~/.aerospace.toml to your liking
-
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
 after-login-command = []
 
-# Run Sketchybar together with AeroSpace
-# sketchbar has a built-in detection of already running process,
-# so it won't be run twice on AeroSpace restart
-after-startup-command = ['exec-and-forget sketchybar']
+# after-startup-command = []
 
-# Notify Sketchybar about workspace change
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
-]
+# exec-on-workspace-change = []
 
 # Start AeroSpace at login
 start-at-login = true
@@ -41,12 +32,12 @@ default-root-container-orientation = 'auto'
 # See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
 # See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
-# on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
 # Also see: https://nikitabobko.github.io/AeroSpace/goodness#disable-hide-app
-automatically-unhide-macos-hidden-apps = false
+automatically-unhide-macos-hidden-apps = true
 
 # Possible values: (qwerty|dvorak)
 # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
@@ -61,19 +52,19 @@ preset = 'qwerty'
 #                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
-inner.horizontal = 24
-inner.vertical = 24
-outer.left = 24
-outer.bottom = 24
-outer.top = 48
-outer.right = 24
+inner.horizontal = [{ monitor."Built-in" = 12 }, 24]
+inner.vertical = [{ monitor."Built-in" = 12 }, 24]
+outer.left = [{ monitor."Built-in" = 0 }, 24]
+outer.bottom = [{ monitor."Built-in" = 0 }, 24]
+outer.top = [{ monitor."Built-in" = 0 }, 24]
+outer.right = [{ monitor."Built-in" = 0 }, 24]
 
 [workspace-to-monitor-force-assignment]
-'1_laptop' = 1
-'2_web' = 2
-'2_code' = 2
-'2_extra' = 2
-'3_slack' = 3
+'laptop' = 1
+'web' = 2
+'code' = 2
+'extra' = 2
+'slack' = 3
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -126,18 +117,18 @@ alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-alt-a = 'workspace 1_laptop'
-alt-d = 'workspace 3_slack'
-alt-s = 'workspace 2_code'
-alt-w = 'workspace 2_web'
-alt-x = 'workspace 2_extra'
+alt-a = 'workspace laptop'
+alt-d = 'workspace slack'
+alt-s = 'workspace code'
+alt-w = 'workspace web'
+alt-x = 'workspace extra'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-alt-shift-a = 'move-node-to-workspace --focus-follows-window 1_laptop'
-alt-shift-d = 'move-node-to-workspace --focus-follows-window 3_slack'
-alt-shift-s = 'move-node-to-workspace --focus-follows-window 2_code'
-alt-shift-w = 'move-node-to-workspace --focus-follows-window 2_web'
-alt-shift-x = 'move-node-to-workspace --focus-follows-window 2_extra'
+alt-shift-a = 'move-node-to-workspace --focus-follows-window laptop'
+alt-shift-d = 'move-node-to-workspace --focus-follows-window slack'
+alt-shift-s = 'move-node-to-workspace --focus-follows-window code'
+alt-shift-w = 'move-node-to-workspace --focus-follows-window web'
+alt-shift-x = 'move-node-to-workspace --focus-follows-window extra'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -149,19 +140,19 @@ alt-shift-semicolon = 'mode service'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.FaceTime'
-run = ['move-node-to-workspace 2_extra']
+run = ['move-node-to-workspace extra']
 
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
-run = ['move-node-to-workspace 2_web']
+run = ['move-node-to-workspace web']
 
 [[on-window-detected]]
 if.app-id = 'com.spotify.client'
-run = ['move-node-to-workspace 1_laptop']
+run = ['move-node-to-workspace laptop']
 
 [[on-window-detected]]
 if.app-id = 'org.alacritty'
-run = ['move-node-to-workspace 2_code']
+run = ['move-node-to-workspace code']
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
