@@ -60,7 +60,7 @@ outer.top = [{ monitor."Built-in" = 0 }, 24]
 outer.right = [{ monitor."Built-in" = 0 }, 24]
 
 [workspace-to-monitor-force-assignment]
-'laptop' = 1
+'spotify' = 1
 'web' = 2
 'code' = 2
 'extra' = 2
@@ -117,14 +117,14 @@ alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-alt-a = 'workspace laptop'
+alt-a = 'workspace spotify'
 alt-d = 'workspace slack'
 alt-s = 'workspace code'
 alt-w = 'workspace web'
 alt-x = 'workspace extra'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-alt-shift-a = 'move-node-to-workspace --focus-follows-window laptop'
+alt-shift-a = 'move-node-to-workspace --focus-follows-window spotify'
 alt-shift-d = 'move-node-to-workspace --focus-follows-window slack'
 alt-shift-s = 'move-node-to-workspace --focus-follows-window code'
 alt-shift-w = 'move-node-to-workspace --focus-follows-window web'
@@ -148,7 +148,7 @@ run = ['move-node-to-workspace web']
 
 [[on-window-detected]]
 if.app-id = 'com.spotify.client'
-run = ['move-node-to-workspace laptop']
+run = ['move-node-to-workspace spotify']
 
 [[on-window-detected]]
 if.app-id = 'org.alacritty'
