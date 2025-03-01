@@ -41,6 +41,8 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
 
+export PATH=$HOME/.local/scripts:$PATH
+
 yt() {
     local video_link="$1"
     fabric -y "$video_link" --transcript

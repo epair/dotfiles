@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Expects worktree directory to contain a .bare directory (assumes using git-clone-bare-for-worktrees script)
+# Examples of call:
+# worktree-manager add feature-branch
+# => Adds a worktree named feature-branch that's attached to a branch named ep/feature-branch
+#
+# worktree-manager --no-prefix add feature-branch
+# => Adds a worktree named feature-branch that's attached to a branch named feature-branch
+#
+# worktree-manager add remote-branch
+# => Fetches a branch named ep/remote-branch and creates a worktree reference to it
+#
+# worktree-manager remove feature-branch
+# => Deletes a worktree named feature-branch that's attached to a branch named ep/feature-branch
+
+prefix="ep/"
+
+if [[ -d .bare ]]; then
+  worktree_dir=$(pwd)
+elif [[ -d ../.bare ]]; then
+  worktree_dir=$(cd .. && pwd)
+else
+  echo "current directory is not a git worktree"
+  exit 1
+fi
+
+while [[ $# -gt 0 ]]; do
+  if [[ $1 == "--no-prefix" ]]; then
+    prefix=""
+  elif [[ $1 == "add" || $1 == "remove" ]]; then
+    command="$1"
+  else
+    worktree_name="$1"
+  fi
+  shift
+done
+
+worktree_dir="$worktree_dir/$worktree_name"
+branch_name="$prefix$worktree_name"
+
+if [[ "$command" == "add" && -n "$worktree_name" ]]; then
+  echo "adding worktree $branch_name"
+  if git show-ref --verify --quiet "refs/remotes/origin/$branch_name"; then
+    git fetch origin "$branch_name:$branch_name"
+  else
+    git branch "$branch_name" main > /dev/null 2>&1
+  fi
+  git worktree add "$worktree_dir" "$branch_name" > /dev/null 2>&1
+elif [[ "$command" == "remove" && -n "$worktree_name" ]]; then
+  echo "removing worktree $branch_name"
+  git worktree remove --force "$worktree_name"
+  git branch -D "$branch_name"
+else
+  echo 'either no command or branch name specified'
+  exit 1
+fi
