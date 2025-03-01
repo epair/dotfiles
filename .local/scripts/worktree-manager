@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
-# Expects worktree directory to contain a .bare directory (assumes using git-clone-bare-for-worktrees script)
+# Expects worktree directory to contain a .bare directory and an optional .worktree-setup post install script
+# (assumes using git-clone-bare-for-worktrees script)
+# Example worktree directory structure:
+# .bare
+# main
+# new-awesome-feature
+# hotfix-bug-12
+# ...
+#
+#
 # Examples of call:
 # worktree-manager add feature-branch
 # => Adds a worktree named feature-branch that's attached to a branch named ep/feature-branch
@@ -39,6 +48,15 @@ done
 worktree_dir="$worktree_dir/$worktree_name"
 branch_name="$prefix$worktree_name"
 
+setup_worktree_env() {
+  parent_dir=$(dirname "$worktree_dir")
+
+  if [[ -x "$parent_dir/.worktree-setup" ]]; then
+    echo "running post worktree install setup $parent_dir/.worktree-setup"
+    "$parent_dir/.worktree-setup" "$worktree_dir"
+  fi
+}
+
 if [[ "$command" == "add" && -n "$worktree_name" ]]; then
   echo "adding worktree $branch_name"
   if git show-ref --verify --quiet "refs/remotes/origin/$branch_name"; then
@@ -47,6 +65,7 @@ if [[ "$command" == "add" && -n "$worktree_name" ]]; then
     git branch "$branch_name" main > /dev/null 2>&1
   fi
   git worktree add "$worktree_dir" "$branch_name" > /dev/null 2>&1
+  setup_worktree_env
 elif [[ "$command" == "remove" && -n "$worktree_name" ]]; then
   echo "removing worktree $branch_name"
   git worktree remove --force "$worktree_name"
