@@ -24,6 +24,7 @@ return {
         path = "~/Documents/Obsidian Vault",
       },
     },
+    notes_subdir = "02 Fleeting Notes",
     daily_notes = {
       -- Optional, if you keep daily notes in a separate directory.
       folder = "01 Dailies",
@@ -46,35 +47,13 @@ return {
       -- substitutions = {},
     },
 
+    note_id_func = function(title)
+      return os.date("%Y%m%d%H%M%S") .. " " .. title
+    end,
+
     picker = {
       name = "fzf-lua",
     },
-
-    -- Optional, alternatively you can customize the frontmatter data.
-    ---@return table
-    note_frontmatter_func = function(note)
-      -- Add the title of the note as an alias.
-      -- if note.title then
-      --   note:add_alias(note.title)
-      -- end
-      local now = os.date("%Y-%m-%dT%H:%M")
-      if note.created == nil then
-        note.created = now
-      end
-
-      note.updated = now
-
-      local out = { id = note.id, tags = note.tags, created = note.created, updated = note.updated }
-
-      -- `note.metadata` contains any manually added fields in the frontmatter.
-      -- So here we just make sure those fields are kept in the frontmatter.
-      if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-        for k, v in pairs(note.metadata) do
-          out[k] = v
-        end
-      end
-
-      return out
-    end,
+    disable_frontmatter = true,
   },
 }
