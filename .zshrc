@@ -40,7 +40,6 @@ export GLOBAL_GEMFILE="$HOME/.config/git/Gemfile"
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
-export PYENV_ROOT="$HOME/.pyenv"
 
 yt() {
     local video_link="$1"
@@ -58,8 +57,6 @@ eval "$(oh-my-posh init zsh --config $HOME/.config/oh-my-posh/tokyonight-custom.
 
 source <(fzf --zsh)
 eval "$(zoxide init zsh --cmd cd)"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
 
 # sesh config
 function sesh-sessions() {
