@@ -12,7 +12,7 @@ Always check current installation instructions.
 <!--https://brew.sh/-->
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew bundle --file <BREWFILE>
+brew bundle --file --global
 
 <!--https://www.gnu.org/software/stow/-->
 cd dotfiles
