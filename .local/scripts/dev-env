@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd ../utilities/dev-env && pwd)
 dry="0"
 
-while [[ $# -gt 0 ]]; do
-  if [[ $1 == "--dry" ]]; then
-    dry="1"
-  else
-    filter="$1"
-  fi
-  shift
-done
+if [ -z "$XDG_CONFIG_HOME" ]; then
+    echo "no xdg config hom"
+    echo "using ~/.config"
+    XDG_CONFIG_HOME=$HOME/.config
+fi
+
+if [ -z "$DEV_ENV" ]; then
+    echo "env var DEV_ENV needs to be present"
+    exit 1
+fi
 
 log() {
   if [[ $dry == "1" ]]; then
@@ -28,6 +29,30 @@ execute() {
   "$@"
 }
 
+copy() {
+  log "removing: $2"
+  if [[ $dry == "0" ]]; then
+    rm -rf "$2"
+  fi
+  log "copying: $1 to $2"
+  if [[ $dry == "0" ]]; then
+    cp -R "$1" "$2"
+  fi
+}
+
+log "env: $DEV_ENV"
+
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd ../utilities/dev-env && pwd)
+
+while [[ $# -gt 0 ]]; do
+  if [[ $1 == "--dry" ]]; then
+    dry="1"
+  else
+    filter="$1"
+  fi
+  shift
+done
+
 cd "$script_dir" || exit
 scripts=$(find "./runs" -perm +111 -type f)
 
@@ -40,3 +65,20 @@ for script in $scripts; do
 
   execute "$script"
 done
+
+DEV_ENV_CONFIG="$DEV_ENV/.config"
+copy "$DEV_ENV_CONFIG/aerospace" "$XDG_CONFIG_HOME/aerospace"
+copy "$DEV_ENV_CONFIG/alacritty" "$XDG_CONFIG_HOME/alacritty"
+copy "$DEV_ENV_CONFIG/git" "$XDG_CONFIG_HOME/git"
+copy "$DEV_ENV_CONFIG/hammerspoon" "$XDG_CONFIG_HOME/hammerspoon"
+copy "$DEV_ENV_CONFIG/lazygit" "$XDG_CONFIG_HOME/lazygit"
+copy "$DEV_ENV_CONFIG/nvim" "$XDG_CONFIG_HOME/nvim"
+copy "$DEV_ENV_CONFIG/sesh" "$XDG_CONFIG_HOME/sesh"
+copy "$DEV_ENV_CONFIG/tmux" "$XDG_CONFIG_HOME/tmux"
+
+copy "$DEV_ENV/.local/scripts" "$HOME/.local/scripts"
+
+copy "$DEV_ENV/.zshrc" "$HOME/.zshrc"
+copy "$DEV_ENV/.zprofile" "$HOME/.zprofile"
+
+copy "$DEV_ENV/.gitconfig" "$HOME/.gitconfig"
