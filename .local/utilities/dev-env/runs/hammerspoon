@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+brew install hammerspoon --cask
+
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "$XDG_CONFIG_HOME/hammerspoon/init.lua"
+
