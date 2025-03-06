@@ -21,7 +21,7 @@ return {
     workspaces = {
       {
         name = "brain",
-        path = "~/Documents/Obsidian Vault",
+        path = "~/personal/brain",
       },
     },
     notes_subdir = "02 Fleeting Notes",

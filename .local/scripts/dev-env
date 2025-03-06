@@ -3,7 +3,7 @@
 dry="0"
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
-    echo "no xdg config hom"
+    echo "no xdg config home"
     echo "using ~/.config"
     XDG_CONFIG_HOME=$HOME/.config
 fi
@@ -73,7 +73,6 @@ copy "$DEV_ENV_CONFIG/git" "$XDG_CONFIG_HOME/git"
 copy "$DEV_ENV_CONFIG/hammerspoon" "$XDG_CONFIG_HOME/hammerspoon"
 copy "$DEV_ENV_CONFIG/lazygit" "$XDG_CONFIG_HOME/lazygit"
 copy "$DEV_ENV_CONFIG/nvim" "$XDG_CONFIG_HOME/nvim"
-copy "$DEV_ENV_CONFIG/sesh" "$XDG_CONFIG_HOME/sesh"
 copy "$DEV_ENV_CONFIG/tmux" "$XDG_CONFIG_HOME/tmux"
 
 copy "$DEV_ENV/.local/scripts" "$HOME/.local/scripts"

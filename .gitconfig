@@ -17,4 +17,3 @@
 	excludesFile = ~/.config/git/gitignore
 [alias]
   co = checkout
-  sesh = "!sh $HOME/bin/git-worktree.sh"

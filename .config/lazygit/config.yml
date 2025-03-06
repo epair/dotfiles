@@ -9,10 +9,10 @@ customCommands:
         title: 'What is the new worktree session name?'
         key: 'WorktreeName'
         initialValue: ''
-    command: "git sesh add {{.Form.WorktreeName}}"
+    command: "worktree-manager add {{.Form.WorktreeName}}; tmux-sessionizer $HOME/code/postie/letterpress-app/{{.Form.WorktreeName}}"
     loadingText: 'Creating worktree session'
   - key: 'd'
     context: 'worktrees'
     description: 'Delete a worktree session'
-    command: "git sesh remove {{.SelectedWorktree.Name}}"
+    command: "worktree-manager remove {{.SelectedWorktree.Name}}; tmux kill-session -t {{.SelectedWorktree.Name}}"
     loadingText: 'Removing worktree session'

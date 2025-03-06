@@ -117,19 +117,21 @@ alias rubymine="~/bin/rubymine.sh"
 source <(fzf --zsh)
 eval "$(zoxide init zsh --cmd cd)"
 
-function sesh-sessions() {
+function tmux-sessions() {
   {
     exec </dev/tty
     exec <&1
     local session
-    session=$(sesh list --icons | fzf --ansi --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
+    local list
+    list=$(file-finder $HOME/code/postie/letterpress-app)
+    session=$(echo "$list" | fzf --ansi --height 40% --reverse --border-label ' tmux sessions ' --border --prompt '⚡  ')
     zle reset-prompt > /dev/null 2>&1 || true
     [[ -z "$session" ]] && return
-    sesh connect $session
+    tmux-sessionizer $session
   }
 }
 
-zle     -N            sesh-sessions
-bindkey -M emacs '^t' sesh-sessions
-bindkey -M vicmd '^t' sesh-sessions
-bindkey -M viins '^t' sesh-sessions
+zle     -N            tmux-sessions
+bindkey -M emacs '^t' tmux-sessions
+bindkey -M vicmd '^t' tmux-sessions
+bindkey -M viins '^t' tmux-sessions
