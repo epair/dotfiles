@@ -9,6 +9,10 @@ customCommands:
         title: 'What is the new worktree session name?'
         key: 'WorktreeName'
         initialValue: ''
+      - type: 'input'
+        title: 'What is the prefix for the new worktree branch?'
+        key: 'BranchPrefix'
+        initialValue: 'ep/'
     command: "WORKTREE_PREFIX={{.Form.BranchPrefix}} worktree-manager add {{.Form.WorktreeName}}; tmux-sessionizer $HOME/code/postie/letterpress-app/{{.Form.WorktreeName}}"
     loadingText: 'Creating worktree session'
   - key: 'd'
