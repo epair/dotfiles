@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Credits: https://github.com/ThePrimeagen/dev
+
 dry="0"
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
