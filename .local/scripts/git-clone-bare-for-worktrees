@@ -31,6 +31,7 @@ echo "gitdir: ./.bare" >.git
 # Explicitly sets the remote origin fetch so we can fetch remote branches
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
-# Gets all branches from origin
-# git fetch origin
-echo "Run 'git fetch origin' to grab all branches from origin"
+touch .worktree-setup
+chmod +x .worktree-setup
+
+echo 'The file .worktree-setup is an executable that will be run after each worktree creation; Add necessary setup there'
