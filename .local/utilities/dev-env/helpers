@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+log() {
+  if [[ $DRY_RUN == "1" ]]; then
+    echo "[DRY_RUN]: $*"
+  else
+    echo "$@"
+  fi
+}
+
+execute() {
+  log "execute $*"
+  DRY_RUN=$DRY_RUN "$@"
+}
+
+install_formula() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    log "installing $1"
+    if [[ $DRY_RUN == "1" ]]; then
+      brew install -n "$1"
+    else
+      brew install "$1"
+    fi
+  fi
+}
+
+install_cask() {
+  if ! brew list --cask | grep -q "$1"; then
+    log "installing $1"
+    if [[ $DRY_RUN == "1" ]]; then
+      brew install -n "$1" --cask
+    else
+      brew install "$1" --cask
+    fi
+  fi
+}

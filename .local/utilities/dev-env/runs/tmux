@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+source "$HOME/.local/utilities/dev-env/helpers"
+
+install_formula 'tmux'
+
+if [[ ! -d "$XDG_CONFIG_HOME/.tmux/plugins" ]]; then
+  log "installing tmux plugins"
+  if [[ $DRY_RUN == "0" ]]; then
+    git clone https://github.com/tmux-plugins/tpm "$XDG_CONFIG_HOME/.tmux/plugins/tpm"
+    "$XDG_CONFIG_HOME/.tmux/plugins/tpm/bin/install_plugins"
+  fi
+fi
+

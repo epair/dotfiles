@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
-if ! command -v zsh >/dev/null 2>&1; then
-    echo "zsh is not installed. installing..."
-    brew install zsh
-fi
+source "$HOME/.local/utilities/dev-env/helpers"
+
+install_formula 'zsh'
 
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-    echo "oh-my-zsh is not installed. installing..."
+  log "installing oh-my-zsh"
+  if [[ $DRY_RUN == "0" ]]; then
     RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
     git clone https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+  fi
 fi

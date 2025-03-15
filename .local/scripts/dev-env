@@ -2,7 +2,9 @@
 
 # Credits: https://github.com/ThePrimeagen/dev
 
-dry="0"
+DRY_RUN="0"
+
+source "$HOME/.local/utilities/dev-env/helpers"
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
     echo "no xdg config home"
@@ -15,29 +17,13 @@ if [ -z "$DEV_ENV" ]; then
     exit 1
 fi
 
-log() {
-  if [[ $dry == "1" ]]; then
-    echo "[DRY_RUN]: $*"
-  else
-    echo "$@"
-  fi
-}
-
-execute() {
-  log "execute $*"
-  if [[ $dry == "1" ]]; then
-    return
-  fi
-  "$@"
-}
-
 log "env: $DEV_ENV"
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd ../utilities/dev-env && pwd)
 
 while [[ $# -gt 0 ]]; do
   if [[ $1 == "--dry" ]]; then
-    dry="1"
+    DRY_RUN="1"
   else
     filter="$1"
   fi
@@ -48,9 +34,7 @@ cd "$script_dir" || exit
 scripts=$(find "./runs" -perm +111 -type f)
 
 for script in $scripts; do
-  basename=$(basename "$script")
   if echo "$script" | grep -qv "$filter"; then
-    log "filtering $basename"
     continue
   fi
 
