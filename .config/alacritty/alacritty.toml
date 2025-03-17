@@ -3,19 +3,19 @@
 TERM = "xterm-256color"
 
 [window]
-# decorations = "buttonless"
+decorations = "buttonless"
 dynamic_padding = false
 startup_mode = "Maximized"
 option_as_alt = "Both"
 dynamic_title = false
-opacity = 0.90
+opacity = 1
 
 [window.padding]
 x = 25
 y = 20
 
 [font]
-size = 22.0
+size = 20.0
 normal.family = "Hack Nerd Font"
 bold.family = "Hack Nerd Font"
 italic.family = "Hack Nerd Font"
