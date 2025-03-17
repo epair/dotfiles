@@ -14,7 +14,7 @@ execute() {
 }
 
 install_formula() {
-  if ! command -v "$1" >/dev/null 2>&1; then
+  if ! brew list --formula | grep -q "$1"; then
     log "installing $1"
     if [[ $DRY_RUN == "1" ]]; then
       brew install -n "$1"
