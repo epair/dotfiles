@@ -23,16 +23,16 @@
 # worktree-manager remove feature-branch
 # => Deletes a worktree named feature-branch that's attached to a branch named ep/feature-branch
 
-if [ -z "$WORKTREE_PREFIX" ]; then
+if [ -z "${WORKTREE_PREFIX+x}" ]; then
     echo "no worktree prefix"
     echo "using ep/"
     WORKTREE_PREFIX='ep/'
 fi
 
 if [[ -d .bare ]]; then
-  worktree_dir=$(pwd)
+  parent_dir=$(pwd)
 elif [[ -d ../.bare ]]; then
-  worktree_dir=$(cd .. && pwd)
+  parent_dir=$(cd .. && pwd)
 else
   echo "current directory is not a git worktree"
   exit 1
@@ -47,12 +47,10 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-worktree_dir="$worktree_dir/$worktree_name"
+worktree_dir="$parent_dir/$worktree_name"
 branch_name="$WORKTREE_PREFIX$worktree_name"
 
 setup_worktree_env() {
-  parent_dir=$(dirname "$worktree_dir")
-
   if [[ -x "$parent_dir/.worktree-setup" ]]; then
     "$parent_dir/.worktree-setup" "$worktree_dir"
   fi

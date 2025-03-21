@@ -18,5 +18,10 @@ customCommands:
   - key: 'd'
     context: 'worktrees'
     description: 'Delete a worktree session'
-    command: "worktree-manager remove {{.SelectedWorktree.Name}}; tmux has-session -t {{.SelectedWorktree.Name}} 2>/dev/null && tmux kill-session -t {{.SelectedWorktree.Name}}"
+    prompts:
+      - type: 'input'
+        title: 'What is the prefix for the worktree branch?'
+        key: 'BranchPrefix'
+        initialValue: 'ep/'
+    command: "WORKTREE_PREFIX={{.Form.BranchPrefix}} worktree-manager remove {{.SelectedWorktree.Name}}; tmux has-session -t {{.SelectedWorktree.Name}} 2>/dev/null && tmux kill-session -t {{.SelectedWorktree.Name}}"
     loadingText: 'Removing worktree session'
