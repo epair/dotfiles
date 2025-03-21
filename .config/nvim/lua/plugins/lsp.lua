@@ -193,7 +193,7 @@ return {
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = { "eslint", "lua_ls", "ruby_lsp", "rubocop" },
+        ensure_installed = { "lua_ls", "ruby_lsp" },
         handlers = {
           function(server_name)
             require('lspconfig')[server_name].setup({})
