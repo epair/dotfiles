@@ -4,8 +4,7 @@ return {
     lazy = false,
     opts = {},
   },
-  -- Autocompletion
-  { -- Autocompletion
+  {
     'hrsh7th/nvim-cmp',
     event = { 'InsertEnter', 'CmdlineEnter'},
     dependencies = {
@@ -140,7 +139,6 @@ return {
         },  }
     end,
   },
-  -- LSP
   {
     'neovim/nvim-lspconfig',
     cmd = {'LspInfo', 'LspInstall', 'LspStart'},
@@ -154,6 +152,16 @@ return {
       -- Reserve a space in the gutter
       -- This will avoid an annoying layout shift in the screen
       vim.opt.signcolumn = 'yes'
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.HINT] = " ",
+            [vim.diagnostic.severity.INFO] = " "
+          },
+        }
+      })
     end,
     config = function()
       local lsp_defaults = require('lspconfig').util.default_config
