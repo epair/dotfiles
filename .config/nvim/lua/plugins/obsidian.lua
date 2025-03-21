@@ -7,7 +7,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim", -- Required
     "nvim-treesitter/nvim-treesitter",
-    "ibhagwan/fzf-lua",
+    "nvim-telescope/telescope.nvim",
   },
   keys = {
     { "<leader>ot", ":ObsidianToday<CR>", desc = "Today's note" },
