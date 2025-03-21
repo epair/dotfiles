@@ -66,7 +66,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-syntax-highlighting zsh-autosuggestions git)
+plugins=(zsh-syntax-highlighting zsh-autosuggestions git mise)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -116,6 +116,7 @@ alias rubymine="~/bin/rubymine.sh"
 
 source <(fzf --zsh)
 eval "$(zoxide init zsh --cmd cd)"
+eval "$(mise activate zsh)"
 
 function tmux-sessions() {
   {
