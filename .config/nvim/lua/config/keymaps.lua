@@ -21,3 +21,5 @@ vim.keymap.set({"n", "v"}, "<leader>d", "\"_d", { desc = 'Delete with yanking' }
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Search and Replace currect word in buffer' })
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = 'Make current buffer executable' })
+
+vim.keymap.set("n", "<leader><BS>", "<C-^>", { desc = 'Go to Last Buffer' })
