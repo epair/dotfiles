@@ -11,5 +11,14 @@ return {
 			additional_vim_regex_highlighting = { 'ruby' },
 		},
 		indent = { enable = true, disable = { 'ruby' } },
-	},
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "<C-n>",
+        node_incremental = "<C-n>",
+        scope_incremental = false,
+        node_decremental = "<C-p>",
+      },
+    }
+  }
 }
