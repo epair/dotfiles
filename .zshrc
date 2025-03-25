@@ -107,6 +107,10 @@ yt() {
     fabric -y "$video_link" --transcript
 }
 
+dv() {
+  make -f $DEV_ENV/Makefile $@
+}
+
 alias ls=eza
 alias up="./bin/docker/up"
 alias down="./bin/docker/down"
@@ -135,3 +139,5 @@ zle     -N            tmux-sessions
 bindkey -M emacs '^t' tmux-sessions
 bindkey -M vicmd '^t' tmux-sessions
 bindkey -M viins '^t' tmux-sessions
+
+echo "✅ Shell successfully loaded at $(date)"
