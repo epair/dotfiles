@@ -112,7 +112,6 @@ alias up="./bin/docker/up"
 alias down="./bin/docker/down"
 alias stop="./bin/docker/stop"
 alias con="./bin/docker/console"
-alias rubymine="~/bin/rubymine.sh"
 
 source <(fzf --zsh)
 eval "$(zoxide init zsh --cmd cd)"
