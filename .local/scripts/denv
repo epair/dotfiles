@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+
+
+function help {
+  echo "DOTFILES SETUP UTILITY"
+  echo ""
+  echo "USAGE:"
+  echo "  denv [command] [subcommand]"
+  echo ""
+  echo "COMMANDS:"
+  echo "  reset             Reset symlinks and reload shell"
+  echo "  install           Complete setup: install Homebrew, set up symlinks," 
+  echo "                    install packages from Brewfile, and reload shell"
+  echo ""
+  echo "SUBCOMMANDS:"
+  echo "  install homebrew   Install Xcode command line tools and Homebrew"
+  echo "  install symlinks   Create symbolic links from dotfiles to home directory"
+  echo "  install brewfile   Install all packages defined in Brewfile"
+  echo "  reset symlinks     Refresh all symbolic links"
+  echo "  reload shell       Restart shell across all tmux sessions"
+  echo "  reload env         Reload the entire environment across all tmux sessions"
+  echo "  reload nvim        Reload Neovim configuration across all tmux sessions"
+  echo "  help               Display this help message"
+  echo ""
+  echo "EXAMPLES:"
+  echo "  denv install            Run complete installation"
+  echo "  denv reset              Reset symlinks and reload shell"
+  echo "  denv install homebrew   Install just Homebrew"
+  echo ""
+  echo "This script manages your dotfiles setup, creating symbolic links from"
+  echo "your dotfiles repository to your home directory and installing required"
+  echo "packages via Homebrew."
+}
+
+
+function execute {
+  if type $1 &>/dev/null; then
+    $1
+    exit $?
+  else
+    echo "Unknown command: $1"
+  fi
+  help
+  exit 1
+}
+
+function install_homebrew {
+  echo "Installing xcode tools..."
+  xcode-select --install 
+  echo "Xcode tools installed"
+  echo "Installing homebrew..."
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "Homebrew installed"
+}
+
+function install_symlinks {
+  echo "Setting up symlinks..."
+  brew install stow
+  mkdir -p ~/.config/tmux/plugins
+  cd "$HOME/code/dotfiles" && \
+      stow --dir="$HOME/code/dotfiles" --target="$HOME" .
+  echo 'Symlinks setup complete'
+}
+
+function install_brewfile {
+  echo "Installing formulae and casks from Brewfile..."
+  brew bundle --global
+  cd "$HOME/code/dotfiles" && \
+      stow --adopt ~/code/dotfiles && \
+      git restore . && \
+      stow -R --dir="$HOME/code/dotfiles" --target="$HOME" .
+  echo "Brewfile install complete"
+}
+
+function reset_symlinks {
+  echo "Resetting symlinks..."
+  cd "$HOME/code/dotfiles" && \
+      stow -R --dir="$HOME/code/dotfiles" --target="$HOME" .
+  echo "Symlinks reset complete"
+}
+
+function reload_env {
+  echo "Reloading environment..."
+  tmux list-panes -a -F "#{pane_id} #{session_name} #{pane_current_command}" | while read -r pane_info; do
+    pane_id=$(echo "$pane_info" | awk '{print $1}')
+    session_name=$(echo "$pane_info" | awk '{print $2}')
+    command=$(echo "$pane_info" | awk '{$1=""; $2=""; print $0}' | xargs)
+    
+    if [[ "$command" == *"tmux"* || "$command" == *"zsh"* ]]; then
+      (tmux send-keys -t "$pane_id" "clear && exec zsh -l" C-m) 2>/dev/null
+      echo "Reloaded Zsh config in pane $session_name"
+    elif [[ "$command" == *"nvim"* || "$command" == *"vim"* ]]; then
+      tmux send-keys -t "$pane_id" Escape
+      sleep 0.1
+      tmux send-keys -t "$pane_id" ":wq!"
+      sleep 0.1
+      (tmux send-keys -t "$pane_id" "clear && exec zsh -l" C-m) 2>/dev/null
+      sleep 0.2
+      tmux send-keys -t "$pane_id" nvim Enter
+      echo "Reloaded Neovim config in pane $session_name"
+    fi
+  done
+  tmux source-file "$HOME/.config/tmux/tmux.conf"
+  echo "Reload complete"
+}
+
+function reload_nvim {
+  tmux list-panes -a -F "#{pane_id} #{session_name} #{pane_current_command}" | while read -r pane_info; do
+    pane_id=$(echo "$pane_info" | awk '{print $1}')
+    session_name=$(echo "$pane_info" | awk '{print $2}')
+    command=$(echo "$pane_info" | awk '{$1=""; $2=""; print $0}' | xargs)
+    
+    if [[ "$command" == *"nvim"* || "$command" == *"vim"* ]]; then
+      tmux send-keys -t "$pane_id" Escape
+      sleep 0.1
+      tmux send-keys -t "$pane_id" ":source $HOME/.config/nvim/init.lua" Enter
+      echo "Reloaded Neovim config in pane $session_name"
+    fi
+  done
+  echo "Neovim reload completed"
+}
+
+function install {
+  install_homebrew
+  install_symlinks
+  install_brewfile
+  clear && exec zsh -l 2>/dev/null
+}
+
+function reset {
+  reset_symlinks
+  reload_env
+}
+
+cmd="$1"
+subcmd="$2"
+
+if [ -n "$cmd" ] && [ -n "$subcmd" ]; then
+  func_name="${cmd}_${subcmd}"
+  execute "$func_name"
+elif [ -n "$cmd" ]; then
+  execute "$cmd"
+else
+  help
+  exit 0
+fi
