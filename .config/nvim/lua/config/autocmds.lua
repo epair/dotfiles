@@ -107,3 +107,12 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.opt_local.conceallevel = 0
   end,
 })
+
+-- Enable line wrapping for markdown files
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("markdown_wrap"),
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+  end,
+})
