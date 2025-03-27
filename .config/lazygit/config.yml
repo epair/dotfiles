@@ -25,3 +25,13 @@ customCommands:
         initialValue: 'ep/'
     command: "WORKTREE_PREFIX={{.Form.BranchPrefix}} worktree-manager remove {{.SelectedWorktree.Name}}; tmux has-session -t {{.SelectedWorktree.Name}} 2>/dev/null && tmux kill-session -t {{.SelectedWorktree.Name}}"
     loadingText: 'Removing worktree session'
+  - key: 'p'
+    context: 'worktrees'
+    description: 'Submit a PR'
+    prompts:
+      - type: 'input'
+        title: 'What is the title of this PR?'
+        key: 'PRTitle'
+        initialValue: ''
+    command: "gh pr create --title '{{.Form.PRTitle}}' --body-file=tmp/prs/{{.SelectedWorktree.Name}}.md --reviewer njm"
+    loadingText: 'Submitting a Pull Request'
