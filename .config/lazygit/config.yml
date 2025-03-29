@@ -1,5 +1,7 @@
 os:
   editPreset: 'nvim-remote'
+git:
+  overrideGpg: true
 customCommands:
   - key: 'n'
     context: 'worktrees'
