@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Find all tmux sessions
+tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
+
+# Exit if no tmux sessions are running
+if [ -z "$tmux_sessions" ]; then
+  echo "No tmux sessions found."
+  exit 0
+fi
+
+# Loop through each session
+for session in $tmux_sessions; do
+  # Find windows named "lazygit" in the current session
+  lazygit_windows=$(tmux list-windows -t "$session" -F "#{window_name}:#{window_index}" | grep "^lazygit:" | cut -d':' -f2)
+  
+  # Kill each lazygit window
+  for window in $lazygit_windows; do
+    echo "Killing lazygit window $window in session $session"
+    tmux kill-window -t "$session:$window"
+  done
+done
+
+echo "All lazygit windows have been terminated."
+
