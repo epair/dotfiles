@@ -5,8 +5,8 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "$HOME/code/dotfiles",
-        "$HOME/personal/brain"
+        "~/code/dotfiles",
+        "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/brain"
       ]
     }
   }
