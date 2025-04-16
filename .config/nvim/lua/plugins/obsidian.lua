@@ -48,9 +48,6 @@ return {
     },
 
     note_id_func = function(title)
-      -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-      -- In this case a note with the title 'My new note' will be given an ID that looks
-      -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
       local suffix = ""
       if title ~= nil then
         -- If title is given, transform it into valid file name.
@@ -64,28 +61,38 @@ return {
       return tostring(os.date("%Y%m%d%H%M%S")) .. "-" .. suffix
     end,
 
+    wiki_link_func = "use_alias_only",
+
+    note_path_func = function(spec)
+      local path
+      if string.find(tostring(spec.dir), "Fleeting Notes") then
+        path = spec.dir / tostring(spec.id)
+      else
+        path = spec.dir / tostring(spec.title)
+      end
+      return path:with_suffix(".md")
+    end,
+
     note_frontmatter_func = function(note)
-      -- Example usage
-      -- Add the title of the note as an alias.
-      if note.title then
-        note:add_alias(note.title)
-      end
-
-      if string.find(tostring(note.path), "Fleeting") then
+      if string.find(tostring(note.path), "/Fleeting Notes/") then
         note:add_tag("note/fleeting")
-      end
-
-      if string.find(tostring(note.path), "Literature") then
+      elseif string.find(tostring(note.path), "/Evergreen Notes/") then
+        note:add_tag("note/evergreen")
+      elseif string.find(tostring(note.path), "/Literature Notes/") then
         note:add_tag("note/literature")
+      elseif string.find(tostring(note.path), "/Lists/") then
+        note:add_tag("note/list")
       end
 
       local out = {
-        id = note.id,
-        aliases = note.aliases,
         tags = note.tags,
         date = os.date("%Y-%m-%dT%H:%M"),
         last_updated = os.date("%Y-%m-%dT%H:%M"),
       }
+
+      if note.aliases and #note.aliases > 0 then
+        out.aliases = note.aliases
+      end
 
       -- `note.metadata` contains any manually added fields in the frontmatter.
       -- So here we just make sure those fields are kept in the frontmatter.
