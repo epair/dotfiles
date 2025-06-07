@@ -215,7 +215,7 @@ return {
           ["ruby_lsp"] = function()
             local lspconfig = require("lspconfig")
             lspconfig.ruby_lsp.setup {
-              cmd_env = { BUNDLE_GEMFILE = vim.fn.getenv("GLOBAL_GEMFILE") },
+              cmd_env = { BUNDLE_GEMFILE = "" }, -- stub out the gemfile; we lose gem support but that's ok
             }
           end
         }
