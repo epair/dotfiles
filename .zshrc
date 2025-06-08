@@ -25,10 +25,6 @@ fi
 
 autoload -Uz compinit && compinit
 
-dv() {
-  make -f $DEV_ENV/Makefile $@
-}
-
 alias ls=eza
 alias up="./bin/docker/up"
 alias down="./bin/docker/down"
