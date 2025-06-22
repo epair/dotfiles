@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Display fzf menu for tmux sessionizer with various search options
+
+selected=$(
+    tmux list-sessions | cut -d: -f1 | fzf-tmux -p 55%,60% \
+        --no-sort --ansi --border-label ' tmux sessions ' --prompt '⚡  ' \
+        --header '  ^s sessions ^l letterpress ^p postie ^t code ^f find all' \
+        --bind 'tab:down,btab:up' \
+        --bind 'ctrl-s:reload(tmux list-sessions | cut -d: -f1)' \
+        --bind 'ctrl-l:reload(file-finder $HOME/code/postie/letterpress-app)' \
+        --bind 'ctrl-p:reload(file-finder $HOME/code/postie/letterpress-app $HOME/code/postie)' \
+        --bind 'ctrl-t:reload(file-finder $HOME/code/postie/letterpress-app $HOME/code/postie $HOME/code)' \
+        --bind 'ctrl-f:reload(fd -H -d 2 -t d -E .Trash . ~)'
+)
+
+# If a selection was made, run tmux-sessionizer
+if [[ -n "$selected" ]]; then
+    tmux-sessionizer "$selected"
+fi
