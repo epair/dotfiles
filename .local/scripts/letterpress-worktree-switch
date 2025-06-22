@@ -34,16 +34,35 @@ fi
 # Create menu items
 menu_items=("-T" "Switch to Worktree" "" "" "")
 
+# Counter for hotkeys
+index=1
+
 while IFS= read -r worktree; do
     if [[ -n "$worktree" ]]; then
         worktree_path="$LETTERPRESS_DIR/$worktree"
         
+        # Determine hotkey (only for first 9 items)
+        hotkey=""
+        if [[ $index -le 9 ]]; then
+            hotkey="$index"
+        fi
+        
         # Check if session exists
         if tmux has-session -t "$worktree" 2>/dev/null; then
-            menu_items+=("$worktree •" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+            if [[ -n "$hotkey" ]]; then
+                menu_items+=("$worktree •" "$hotkey" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+            else
+                menu_items+=("$worktree •" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+            fi
         else
-            menu_items+=("$worktree" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+            if [[ -n "$hotkey" ]]; then
+                menu_items+=("$worktree" "$hotkey" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+            else
+                menu_items+=("$worktree" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+            fi
         fi
+        
+        ((index++))
     fi
 done <<< "$worktrees"
 
