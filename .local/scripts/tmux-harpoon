@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+
+HARPOON_FILE="$HOME/.local/share/tmux-harpoon/sessions.txt"
+HARPOON_DIR="$(dirname "$HARPOON_FILE")"
+
+# Ensure harpoon directory exists
+mkdir -p "$HARPOON_DIR"
+
+# Initialize file if it doesn't exist
+if [[ ! -f "$HARPOON_FILE" ]]; then
+    touch "$HARPOON_FILE"
+fi
+
+# Get current tmux session name
+get_current_session() {
+    tmux display-message -p '#S'
+}
+
+# Add current session to harpoon list
+add_session() {
+    local current_session=$(get_current_session)
+    
+    # Check if session already exists in file
+    if grep -q "^$current_session$" "$HARPOON_FILE"; then
+        tmux display-message "Session '$current_session' already harpooned"
+    else
+        echo "$current_session" >> "$HARPOON_FILE"
+        tmux display-message "Added '$current_session' to harpoon"
+    fi
+}
+
+# Select a harpooned session by index (1-6)
+select_session() {
+    local index=$1
+    local session=$(sed -n "${index}p" "$HARPOON_FILE")
+    
+    if [[ -z "$session" ]]; then
+        tmux display-message "No session at position $index"
+        return 1
+    fi
+    
+    # Check if session exists
+    if tmux has-session -t "$session" 2>/dev/null; then
+        tmux switch-client -t "$session"
+    else
+        tmux display-message "Session '$session' not found"
+    fi
+}
+
+# Replace session at index with current session
+replace_session() {
+    local index=$1
+    local current_session=$(get_current_session)
+    
+    # Read all sessions
+    local sessions=()
+    while IFS= read -r line; do
+        sessions+=("$line")
+    done < "$HARPOON_FILE"
+    
+    # Ensure we have at least 'index' number of slots
+    while [[ ${#sessions[@]} -lt $index ]]; do
+        sessions+=("")
+    done
+    
+    # Replace the session at the index
+    sessions[$((index-1))]="$current_session"
+    
+    # Write back to file, removing empty lines
+    > "$HARPOON_FILE"
+    for session in "${sessions[@]}"; do
+        if [[ -n "$session" ]]; then
+            echo "$session" >> "$HARPOON_FILE"
+        fi
+    done
+    
+    tmux display-message "Replaced position $index with '$current_session'"
+}
+
+# Show harpoon menu using tmux display-menu
+show_menu() {
+    # Build menu items from harpoon file
+    local menu_items=()
+    local index=1
+    
+    # Add header
+    menu_items+=("-T" "Harpooned Sessions")
+    menu_items+=("" "" "")  # Separator
+    
+    # Read sessions and build menu items
+    while IFS= read -r session; do
+        if [[ -n "$session" ]]; then
+            # Check if session exists
+            if tmux has-session -t "$session" 2>/dev/null; then
+                menu_items+=("$index. $session" "$index" "run-shell 'tmux-harpoon select $index'")
+            else
+                menu_items+=("$index. $session (missing)" "$index" "run-shell 'tmux-harpoon select $index'")
+            fi
+        fi
+        ((index++))
+    done < "$HARPOON_FILE"
+    
+    # Add separator and additional options if there are sessions
+    if [[ $index -gt 1 ]]; then
+        menu_items+=("" "" "")  # Separator
+        menu_items+=("Remove current session" "r" "run-shell 'tmux-harpoon remove'")
+    fi
+    
+    # Display the menu
+    if [[ ${#menu_items[@]} -gt 3 ]]; then  # More than just the header
+        tmux display-menu -x C -y C "${menu_items[@]}"
+    else
+        tmux display-message "No harpooned sessions"
+    fi
+}
+
+# List harpooned sessions (for external use)
+list_sessions() {
+    cat "$HARPOON_FILE"
+}
+
+# Remove a session from harpoon
+remove_session() {
+    local session=$1
+    if [[ -z "$session" ]]; then
+        session=$(get_current_session)
+    fi
+    
+    if grep -v "^$session$" "$HARPOON_FILE" > "$HARPOON_FILE.tmp"; then
+        mv "$HARPOON_FILE.tmp" "$HARPOON_FILE"
+        tmux display-message "Removed '$session' from harpoon"
+    else
+        tmux display-message "Session '$session' not in harpoon list"
+    fi
+}
+
+# Main command handler
+case "$1" in
+    add)
+        add_session
+        ;;
+    select)
+        if [[ -z "$2" ]]; then
+            echo "Usage: tmux-harpoon select <index>"
+            exit 1
+        fi
+        select_session "$2"
+        ;;
+    replace)
+        if [[ -z "$2" ]]; then
+            echo "Usage: tmux-harpoon replace <index>"
+            exit 1
+        fi
+        replace_session "$2"
+        ;;
+    menu)
+        show_menu
+        ;;
+    list)
+        list_sessions
+        ;;
+    remove)
+        remove_session "$2"
+        ;;
+    *)
+        echo "Usage: tmux-harpoon {add|select <n>|replace <n>|menu|list|remove [session]}"
+        exit 1
+        ;;
+esac

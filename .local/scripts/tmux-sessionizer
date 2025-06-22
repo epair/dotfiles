@@ -22,6 +22,11 @@ hydrate() {
 
 if [[ $# -eq 1 ]]; then
   selected=$1
+  # Check if the argument is a session name (not a path)
+  if tmux has-session -t "$selected" 2>/dev/null; then
+    switch_to "$selected"
+    exit 0
+  fi
 else
   selected=$(find ~/code -mindepth 1 -maxdepth 1 -type d | fzf)
 fi
