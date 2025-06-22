@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+
+# Delete a letterpress worktree with selection menu
+
+LETTERPRESS_DIR="$HOME/code/postie/letterpress-app"
+
+# Function to get branch prefix from worktree
+get_branch_prefix() {
+    local worktree_name="$1"
+    local worktree_path="$LETTERPRESS_DIR/$worktree_name"
+    
+    # Get the current branch name
+    local branch_name=$(cd "$worktree_path" 2>/dev/null && git branch --show-current 2>/dev/null)
+    
+    if [[ -z "$branch_name" ]]; then
+        echo "ep/"  # Default prefix
+        return
+    fi
+    
+    # Extract prefix by removing worktree name from the end of branch name
+    if [[ "$branch_name" == *"$worktree_name" ]]; then
+        # Remove the worktree name from the end to get prefix
+        local prefix="${branch_name%$worktree_name}"
+        echo "$prefix"
+    else
+        echo ""  # No prefix
+    fi
+}
+
+# Function to delete worktree
+delete_worktree() {
+    local worktree_name="$1"
+    local confirmed="$2"
+    
+    if [[ -z "$worktree_name" ]]; then
+        return 0
+    fi
+    
+    # If not confirmed, ask for confirmation
+    if [[ "$confirmed" != "confirmed" ]]; then
+        tmux command-prompt -p "Delete worktree '$worktree_name'? (y/n):" \
+            "if-shell \"[ '%%' = 'y' ]\" \"run-shell 'letterpress-worktree-delete $worktree_name confirmed'\""
+        return 0
+    fi
+    
+    # Auto-detect branch prefix
+    local branch_prefix=$(get_branch_prefix "$worktree_name")
+    
+    # Change to letterpress directory
+    cd "$LETTERPRESS_DIR" || {
+        tmux display-message -d 2000 "Error: Cannot access letterpress directory"
+        return 1
+    }
+    
+    tmux display-message "Deleting worktree '$worktree_name' (prefix: '$branch_prefix')..."
+    
+    # Delete the worktree
+    if WORKTREE_PREFIX="$branch_prefix" worktree-manager remove "$worktree_name"; then
+        # Kill the tmux session if it exists
+        if tmux has-session -t "$worktree_name" 2>/dev/null; then
+            tmux kill-session -t "$worktree_name"
+        fi
+        tmux display-message "Worktree '$worktree_name' deleted successfully"
+    else
+        tmux display-message -d 2000 "Error: Failed to delete worktree '$worktree_name'"
+    fi
+}
+
+# Get list of worktrees (exclude hidden directories and main)
+get_worktrees() {
+    cd "$LETTERPRESS_DIR" || return 1
+    find . -maxdepth 1 -type d ! -name "." ! -name ".*" ! -name "main" -exec basename {} \; | sort
+}
+
+# If called with arguments, execute the deletion
+if [[ $# -ge 1 ]]; then
+    worktree_name="$1"
+    confirmed="${2:-}"
+    delete_worktree "$worktree_name" "$confirmed"
+    exit 0
+fi
+
+# Build menu of worktrees
+worktrees=$(get_worktrees)
+
+if [[ -z "$worktrees" ]]; then
+    tmux display-message "No worktrees to delete"
+    exit 0
+fi
+
+# Create menu items
+menu_items=("-T" "Select Worktree to Delete" "" "" "")
+
+while IFS= read -r worktree; do
+    if [[ -n "$worktree" ]]; then
+        # Check if session exists
+        if tmux has-session -t "$worktree" 2>/dev/null; then
+            menu_items+=("$worktree •" "" "run-shell 'letterpress-worktree-delete $worktree'")
+        else
+            menu_items+=("$worktree" "" "run-shell 'letterpress-worktree-delete $worktree'")
+        fi
+    fi
+done <<< "$worktrees"
+
+# Display the menu
+tmux display-menu -x C -y C "${menu_items[@]}"

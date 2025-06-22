@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Switch to a letterpress worktree
+
+LETTERPRESS_DIR="$HOME/code/postie/letterpress-app"
+
+# Get list of worktrees
+get_worktrees() {
+    cd "$LETTERPRESS_DIR" || return 1
+    find . -maxdepth 1 -type d ! -name "." ! -name ".*" -exec basename {} \; | sort
+}
+
+# If called with argument, switch to that worktree
+if [[ $# -eq 1 ]]; then
+    worktree_name="$1"
+    worktree_path="$LETTERPRESS_DIR/$worktree_name"
+    
+    if [[ -d "$worktree_path" ]]; then
+        tmux-sessionizer "$worktree_path"
+    else
+        tmux display-message -d 2000 "Error: Worktree '$worktree_name' not found"
+    fi
+    exit 0
+fi
+
+# Build menu of worktrees
+worktrees=$(get_worktrees)
+
+if [[ -z "$worktrees" ]]; then
+    tmux display-message "No worktrees found"
+    exit 0
+fi
+
+# Create menu items
+menu_items=("-T" "Switch to Worktree" "" "" "")
+
+while IFS= read -r worktree; do
+    if [[ -n "$worktree" ]]; then
+        worktree_path="$LETTERPRESS_DIR/$worktree"
+        
+        # Check if session exists
+        if tmux has-session -t "$worktree" 2>/dev/null; then
+            menu_items+=("$worktree •" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+        else
+            menu_items+=("$worktree" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
+        fi
+    fi
+done <<< "$worktrees"
+
+# Display the menu
+tmux display-menu -x C -y C "${menu_items[@]}"

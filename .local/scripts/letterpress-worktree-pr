@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Submit a PR for the current letterpress worktree
+
+LETTERPRESS_DIR="$HOME/code/postie/letterpress-app"
+PR_TEMPLATE_DIR="$LETTERPRESS_DIR/tmp/prs"
+
+# Function to submit PR
+submit_pr() {
+    local pr_title="$1"
+    local reviewers="$2"
+    
+    if [[ -z "$pr_title" ]]; then
+        tmux display-message -d 2000 "Error: PR title cannot be empty"
+        return 1
+    fi
+    
+    # Get current directory name (worktree name)
+    local current_dir=$(basename "$PWD")
+    
+    # Check if we're in a letterpress worktree
+    if [[ ! "$PWD" =~ ^"$LETTERPRESS_DIR" ]]; then
+        tmux display-message -d 2000 "Error: Not in a letterpress worktree"
+        return 1
+    fi
+    
+    # Create PR template directory if it doesn't exist
+    mkdir -p "$PR_TEMPLATE_DIR"
+    
+    # Create PR body file if it doesn't exist
+    local pr_body_file="$PR_TEMPLATE_DIR/${current_dir}.md"
+    if [[ ! -f "$pr_body_file" ]]; then
+        cat > "$pr_body_file" << EOF
+## Description
+Brief description of changes
+
+## Testing
+- [ ] Tests added/updated
+- [ ] Manual testing completed
+
+## Notes
+Any additional context
+EOF
+        tmux display-message "Created PR template at $pr_body_file - please edit before submitting"
+        return 1
+    fi
+    
+    # Submit the PR
+    tmux display-message "Submitting PR '$pr_title'..."
+    
+    if gh pr create --title "$pr_title" --body-file="$pr_body_file" --reviewer "$reviewers"; then
+        tmux display-message "PR submitted successfully!"
+    else
+        tmux display-message -d 2000 "Error: Failed to submit PR"
+    fi
+}
+
+# Use nested command prompts to gather input
+tmux command-prompt -p "PR Title:" \
+    "command-prompt -p 'Reviewers (comma-separated):' -I 'njm' \
+        'run-shell \"letterpress-worktree-pr %%1 %%%%\"'"
+
+# If called with arguments (from the nested prompt), execute the PR submission
+if [[ $# -eq 2 ]]; then
+    submit_pr "$1" "$2"
+fi
