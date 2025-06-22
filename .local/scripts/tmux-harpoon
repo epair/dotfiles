@@ -79,6 +79,29 @@ replace_session() {
 
 # Show harpoon menu using tmux display-menu
 show_menu() {
+    # First, clean up missing sessions
+    local temp_file="$HARPOON_FILE.tmp"
+    local cleaned=false
+    
+    > "$temp_file"
+    while IFS= read -r session; do
+        if [[ -n "$session" ]]; then
+            # Only keep sessions that still exist
+            if tmux has-session -t "$session" 2>/dev/null; then
+                echo "$session" >> "$temp_file"
+            else
+                cleaned=true
+            fi
+        fi
+    done < "$HARPOON_FILE"
+    
+    # Replace original file if we cleaned anything
+    if [[ "$cleaned" == "true" ]]; then
+        mv "$temp_file" "$HARPOON_FILE"
+    else
+        rm -f "$temp_file"
+    fi
+    
     # Build menu items from harpoon file
     local menu_items=()
     local index=1
@@ -90,12 +113,8 @@ show_menu() {
     # Read sessions and build menu items
     while IFS= read -r session; do
         if [[ -n "$session" ]]; then
-            # Check if session exists
-            if tmux has-session -t "$session" 2>/dev/null; then
-                menu_items+=("$index. $session" "$index" "run-shell 'tmux-harpoon select $index'")
-            else
-                menu_items+=("$index. $session (missing)" "$index" "run-shell 'tmux-harpoon select $index'")
-            fi
+            # All sessions in the file should exist now
+            menu_items+=("$session" "$index" "run-shell 'tmux-harpoon select $index'")
         fi
         ((index++))
     done < "$HARPOON_FILE"
