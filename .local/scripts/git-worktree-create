@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# Create a new git worktree with tmux prompts
+# Works with any git repository that has a .bare directory
+
+# Function to find git root with .bare directory
+find_git_worktree_root() {
+    local current_dir="$PWD"
+    
+    # Check current directory and parent directories for .bare
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -d "$current_dir/.bare" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+    
+    return 1
+}
+
+# Function to get default branch prefix
+get_default_prefix() {
+    # Try to get user initials from git config
+    local user_name=$(git config --get user.name 2>/dev/null)
+    local user_email=$(git config --get user.email 2>/dev/null)
+    
+    # Check for custom worktree prefix config
+    local custom_prefix=$(git config --get worktree.defaultPrefix 2>/dev/null)
+    if [[ -n "$custom_prefix" ]]; then
+        echo "$custom_prefix"
+        return
+    fi
+    
+    # Try to extract initials from name
+    if [[ -n "$user_name" ]]; then
+        # Extract initials (first letter of each word)
+        local initials=$(echo "$user_name" | sed 's/[^ ]\+ */\U&/g' | sed 's/\([A-Z]\)[^ ]*/\1/g' | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+        if [[ -n "$initials" ]]; then
+            echo "${initials}/"
+            return
+        fi
+    fi
+    
+    # Try to extract from email
+    if [[ -n "$user_email" ]]; then
+        # Extract part before @ and use first two characters
+        local email_prefix=$(echo "$user_email" | cut -d'@' -f1 | cut -c1-2)
+        if [[ -n "$email_prefix" ]]; then
+            echo "${email_prefix}/"
+            return
+        fi
+    fi
+    
+    # Default fallback
+    echo ""
+}
+
+# Find the worktree root
+WORKTREE_ROOT=$(find_git_worktree_root)
+
+if [[ -z "$WORKTREE_ROOT" ]]; then
+    tmux display-message -d 2000 "Error: Not in a git worktree with .bare directory"
+    exit 1
+fi
+
+# Function to create worktree with given parameters
+create_worktree() {
+    local input="$1"
+    
+    # Parse input: "worktree_name [prefix]"
+    # If prefix is not provided, use default
+    local worktree_name="${input%% *}"
+    local remaining="${input#* }"
+    
+    if [[ "$remaining" == "$input" ]]; then
+        # No space found, so no prefix was provided
+        local branch_prefix=$(get_default_prefix)
+    else
+        # Prefix was provided
+        local branch_prefix="$remaining"
+    fi
+    
+    if [[ -z "$worktree_name" ]]; then
+        tmux display-message -d 2000 "Error: Worktree name cannot be empty"
+        return 1
+    fi
+    
+    # Change to worktree root directory
+    cd "$WORKTREE_ROOT" || {
+        tmux display-message -d 2000 "Error: Cannot access worktree root directory"
+        return 1
+    }
+    
+    # Create the worktree
+    tmux display-message "Creating worktree '$worktree_name' with branch prefix '$branch_prefix'..."
+    
+    if WORKTREE_PREFIX="$branch_prefix" worktree-manager add "$worktree_name"; then
+        # Success - switch to the new worktree session
+        # Small delay to ensure worktree is fully created
+        sleep 0.5
+        tmux-sessionizer "$WORKTREE_ROOT/$worktree_name"
+    else
+        tmux display-message -d 2000 "Error: Failed to create worktree '$worktree_name'"
+    fi
+}
+
+# If called with arguments, execute the creation
+if [[ $# -ge 1 ]]; then
+    create_worktree "$*"
+else
+    # Get default prefix for prompt
+    default_prefix=$(get_default_prefix)
+    
+    # Show single prompt for both inputs
+    tmux command-prompt -p "Enter: worktree-name [prefix] (default prefix: $default_prefix):" \
+        "run-shell 'git-worktree-create %%'"
+fi

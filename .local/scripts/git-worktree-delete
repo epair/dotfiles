@@ -1,19 +1,42 @@
 #!/usr/bin/env bash
 
-# Delete a letterpress worktree with selection menu
+# Delete a git worktree with selection menu
+# Works with any git repository that has a .bare directory
 
-LETTERPRESS_DIR="$HOME/code/postie/letterpress-app"
+# Function to find git root with .bare directory
+find_git_worktree_root() {
+    local current_dir="$PWD"
+    
+    # Check current directory and parent directories for .bare
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -d "$current_dir/.bare" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+    
+    return 1
+}
+
+# Find the worktree root
+WORKTREE_ROOT=$(find_git_worktree_root)
+
+if [[ -z "$WORKTREE_ROOT" ]]; then
+    tmux display-message -d 2000 "Error: Not in a git worktree with .bare directory"
+    exit 1
+fi
 
 # Function to get branch prefix from worktree
 get_branch_prefix() {
     local worktree_name="$1"
-    local worktree_path="$LETTERPRESS_DIR/$worktree_name"
+    local worktree_path="$WORKTREE_ROOT/$worktree_name"
     
     # Get the current branch name
     local branch_name=$(cd "$worktree_path" 2>/dev/null && git branch --show-current 2>/dev/null)
     
     if [[ -z "$branch_name" ]]; then
-        echo "ep/"  # Default prefix
+        echo ""  # No prefix
         return
     fi
     
@@ -39,16 +62,16 @@ delete_worktree() {
     # If not confirmed, ask for confirmation
     if [[ "$confirmed" != "confirmed" ]]; then
         tmux command-prompt -p "Delete worktree '$worktree_name'? (y/n):" \
-            "if-shell \"[ '%%' = 'y' ]\" \"run-shell 'letterpress-worktree-delete $worktree_name confirmed'\""
+            "if-shell \"[ '%%' = 'y' ]\" \"run-shell 'git-worktree-delete $worktree_name confirmed'\""
         return 0
     fi
     
     # Auto-detect branch prefix
     local branch_prefix=$(get_branch_prefix "$worktree_name")
     
-    # Change to letterpress directory
-    cd "$LETTERPRESS_DIR" || {
-        tmux display-message -d 2000 "Error: Cannot access letterpress directory"
+    # Change to worktree root directory
+    cd "$WORKTREE_ROOT" || {
+        tmux display-message -d 2000 "Error: Cannot access worktree root directory"
         return 1
     }
     
@@ -68,7 +91,7 @@ delete_worktree() {
 
 # Get list of worktrees (exclude hidden directories and main)
 get_worktrees() {
-    cd "$LETTERPRESS_DIR" || return 1
+    cd "$WORKTREE_ROOT" || return 1
     find . -maxdepth 1 -type d ! -name "." ! -name ".*" ! -name "main" -exec basename {} \; | sort
 }
 
@@ -88,8 +111,11 @@ if [[ -z "$worktrees" ]]; then
     exit 0
 fi
 
+# Get repository name for display
+REPO_NAME=$(basename "$WORKTREE_ROOT")
+
 # Create menu items
-menu_items=("-T" "Select Worktree to Delete" "" "" "")
+menu_items=("-T" "Select Worktree to Delete - $REPO_NAME" "" "" "")
 
 # Counter for hotkeys
 index=1
@@ -105,15 +131,15 @@ while IFS= read -r worktree; do
         # Check if session exists
         if tmux has-session -t "$worktree" 2>/dev/null; then
             if [[ -n "$hotkey" ]]; then
-                menu_items+=("$worktree •" "$hotkey" "run-shell 'letterpress-worktree-delete $worktree'")
+                menu_items+=("$worktree •" "$hotkey" "run-shell 'git-worktree-delete $worktree'")
             else
-                menu_items+=("$worktree •" "" "run-shell 'letterpress-worktree-delete $worktree'")
+                menu_items+=("$worktree •" "" "run-shell 'git-worktree-delete $worktree'")
             fi
         else
             if [[ -n "$hotkey" ]]; then
-                menu_items+=("$worktree" "$hotkey" "run-shell 'letterpress-worktree-delete $worktree'")
+                menu_items+=("$worktree" "$hotkey" "run-shell 'git-worktree-delete $worktree'")
             else
-                menu_items+=("$worktree" "" "run-shell 'letterpress-worktree-delete $worktree'")
+                menu_items+=("$worktree" "" "run-shell 'git-worktree-delete $worktree'")
             fi
         fi
         

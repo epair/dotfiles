@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+# Submit a PR for the current git worktree
+# Works with any git repository that has a .bare directory
+
+# Function to find git root with .bare directory
+find_git_worktree_root() {
+    local current_dir="$PWD"
+    
+    # Check current directory and parent directories for .bare
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -d "$current_dir/.bare" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+    
+    return 1
+}
+
+# Find the worktree root
+WORKTREE_ROOT=$(find_git_worktree_root)
+
+if [[ -z "$WORKTREE_ROOT" ]]; then
+    tmux display-message -d 2000 "Error: Not in a git worktree with .bare directory"
+    exit 1
+fi
+
+# Function to get default reviewers from git config
+get_default_reviewers() {
+    local reviewers=$(git config --get pr.defaultReviewers 2>/dev/null)
+    if [[ -n "$reviewers" ]]; then
+        echo "$reviewers"
+    else
+        echo ""
+    fi
+}
+
+# Function to check for PR template
+find_pr_template() {
+    # Check common locations for PR templates
+    local template_paths=(
+        ".github/pull_request_template.md"
+        ".github/PULL_REQUEST_TEMPLATE.md"
+        "pull_request_template.md"
+        "PULL_REQUEST_TEMPLATE.md"
+        ".gitlab/merge_request_templates/Default.md"
+    )
+    
+    for template in "${template_paths[@]}"; do
+        if [[ -f "$WORKTREE_ROOT/$template" ]]; then
+            echo "$WORKTREE_ROOT/$template"
+            return 0
+        fi
+    done
+    
+    return 1
+}
+
+# Function to submit PR
+submit_pr() {
+    local pr_title="$1"
+    local reviewers="$2"
+    
+    if [[ -z "$pr_title" ]]; then
+        tmux display-message -d 2000 "Error: PR title cannot be empty"
+        return 1
+    fi
+    
+    # Get current directory name (worktree name)
+    local current_dir=$(basename "$PWD")
+    
+    # Check if we're in a worktree subdirectory
+    if [[ ! "$PWD" =~ ^"$WORKTREE_ROOT" ]]; then
+        tmux display-message -d 2000 "Error: Not in a git worktree"
+        return 1
+    fi
+    
+    # Submit the PR
+    tmux display-message "Submitting PR '$pr_title'..."
+    
+    # Build gh pr create command
+    local gh_cmd="gh pr create --title \"$pr_title\""
+    
+    # Add reviewers if specified
+    if [[ -n "$reviewers" ]]; then
+        gh_cmd="$gh_cmd --reviewer \"$reviewers\""
+    fi
+    
+    # Check for PR template
+    local pr_template=$(find_pr_template)
+    if [[ -n "$pr_template" ]]; then
+        gh_cmd="$gh_cmd --body-file=\"$pr_template\""
+    else
+        # Use a simple default body
+        gh_cmd="$gh_cmd --body=\"\""
+    fi
+    
+    # Execute the command
+    if eval "$gh_cmd"; then
+        tmux display-message "PR submitted successfully!"
+        
+        # Open the PR in browser if gh is configured to do so
+        local pr_url=$(gh pr view --json url -q .url 2>/dev/null)
+        if [[ -n "$pr_url" ]]; then
+            tmux display-message "PR created: $pr_url"
+        fi
+    else
+        tmux display-message -d 2000 "Error: Failed to submit PR"
+    fi
+}
+
+# Get default reviewers
+default_reviewers=$(get_default_reviewers)
+
+# Use nested command prompts to gather input
+if [[ -n "$default_reviewers" ]]; then
+    tmux command-prompt -p "PR Title:" \
+        "command-prompt -p 'Reviewers (comma-separated):' -I '$default_reviewers' \
+            'run-shell \"git-worktree-pr %%1 %%%%\"'"
+else
+    tmux command-prompt -p "PR Title:" \
+        "command-prompt -p 'Reviewers (comma-separated, optional):' \
+            'run-shell \"git-worktree-pr %%1 %%%%\"'"
+fi
+
+# If called with arguments (from the nested prompt), execute the PR submission
+if [[ $# -ge 1 ]]; then
+    submit_pr "$1" "${2:-}"
+fi

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Display tmux menu for git worktree management
+# Works with any git repository that has a .bare directory
+
+# Function to find git root with .bare directory
+find_git_worktree_root() {
+    local current_dir="$PWD"
+    
+    # Check current directory and parent directories for .bare
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -d "$current_dir/.bare" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+    
+    return 1
+}
+
+# Find the worktree root
+WORKTREE_ROOT=$(find_git_worktree_root)
+
+if [[ -z "$WORKTREE_ROOT" ]]; then
+    tmux display-message -d 2000 "Error: Not in a git worktree with .bare directory"
+    exit 1
+fi
+
+# Get repository name for display
+REPO_NAME=$(basename "$WORKTREE_ROOT")
+
+# Build menu items
+menu_items=(
+    "-T" "Git Worktree Management - $REPO_NAME"
+    "" "" ""  # Separator
+    "Switch to Worktree" "s" "run-shell 'git-worktree-switch'"
+    "Create New Worktree" "c" "run-shell 'git-worktree-create'"
+    "Delete Worktree" "d" "run-shell 'git-worktree-delete'"
+    "" "" ""  # Separator
+    "Submit PR" "p" "run-shell 'git-worktree-pr'"
+)
+
+# Display the menu
+tmux display-menu -x C -y C "${menu_items[@]}"
