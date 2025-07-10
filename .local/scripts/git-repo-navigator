@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+# Git Repository Navigator
+# Interactively navigate directories until reaching a git repository
+
+# Use fzf-tmux if we're in tmux, otherwise use regular fzf
+if [[ -n "$TMUX" ]]; then
+  FZF_CMD="fzf-tmux -p 80%,60%"
+else
+  FZF_CMD="fzf"
+fi
+
+is_git_repo() {
+  local dir="$1"
+  [[ -d "$dir/.git" ]] || [[ -f "$dir/.git" ]]
+}
+
+is_worktree_parent() {
+  local dir="$1"
+  [[ -d "$dir/.bare" ]]
+}
+
+navigate_directory() {
+  local current_dir="${1:-$HOME/code}"
+  
+  while true; do
+    # Get relative path for display
+    local display_path="${current_dir/#$HOME/~}"
+    
+    # Find all directories in current location
+    local dirs=$(find "$current_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+    
+    # Build fzf input with indicators
+    local fzf_input=""
+    
+    # Add parent directory option if not at ~/code
+    if [[ "$current_dir" != "$HOME/code" ]]; then
+      fzf_input="../ (Go back)
+"
+    fi
+    
+    # Add directories with git repo indicators
+    while IFS= read -r dir; do
+      [[ -z "$dir" ]] && continue
+      local basename=$(basename "$dir")
+      
+      # Skip .bare directory itself
+      [[ "$basename" == ".bare" ]] && continue
+      
+      if is_worktree_parent "$dir"; then
+        # This is a worktree parent, show it as navigable
+        fzf_input+="$basename/ [worktrees]
+"
+      elif is_git_repo "$dir"; then
+        fzf_input+="$basename [git]
+"
+      else
+        fzf_input+="$basename/
+"
+      fi
+    done <<< "$dirs"
+    
+    # Show fzf menu
+    local selected=$(echo -n "$fzf_input" | $FZF_CMD \
+      --prompt="Navigate $display_path > " \
+      --header="Select directory (ESC to cancel)" \
+      --no-multi \
+      --height=20 \
+      --layout=reverse)
+    
+    # Exit if cancelled
+    [[ -z "$selected" ]] && exit 0
+    
+    # Handle parent directory
+    if [[ "$selected" == "../ (Go back)" ]]; then
+      current_dir=$(dirname "$current_dir")
+      continue
+    fi
+    
+    # Remove indicators from selection
+    local clean_name="${selected% \[git\]}"
+    clean_name="${clean_name% \[worktrees\]}"
+    clean_name="${clean_name%/}"
+    local selected_path="$current_dir/$clean_name"
+    
+    # If it's a worktree parent, navigate into it to show worktrees
+    if is_worktree_parent "$selected_path"; then
+      current_dir="$selected_path"
+      continue
+    elif is_git_repo "$selected_path"; then
+      # Regular git repo or worktree, use tmux-sessionizer
+      exec tmux-sessionizer "$selected_path"
+    else
+      # Continue navigating into the directory
+      current_dir="$selected_path"
+    fi
+  done
+}
+
+# Start navigation
+navigate_directory "$@"
