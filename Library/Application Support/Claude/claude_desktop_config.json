@@ -1,5 +1,22 @@
 {
   "mcpServers": {
+    "anki": {
+      "command": "npx",
+      "args": ["--yes","anki-mcp-server"]
+    },
+    "todoist-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@miottid/todoist-mcp",
+        "--key",
+        "6e7b8bed-1323-4fb6-9a3f-bd501a77d396",
+        "--config",
+        "\"{\\\"todoistApiKey\\\":\\\"f9aa4d4afc14a2e5e2bccd10cda1028a91302481\\\"}\""
+      ]
+    },
     "filesystem": {
       "command": "npx",
       "args": [
