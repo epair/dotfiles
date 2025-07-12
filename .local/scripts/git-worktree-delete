@@ -74,6 +74,61 @@ delete_worktree() {
         tmux display-message -d 2000 "Error: Cannot access worktree root directory"
         return 1
     }
+
+    # Check if this is a letterpress-app repository
+    if [[ "$(basename "$WORKTREE_ROOT")" == "letterpress-app" ]]; then
+        tmux display-message "Tearing down docker containers..."
+        
+        # Create a unique window name for this teardown
+        local teardown_window="teardown-${worktree_name}-$$"
+        
+        # Create a new window in the background for docker cleanup
+        tmux new-window -d -n "$teardown_window" \
+            "cd '$WORKTREE_ROOT/$worktree_name' 2>/dev/null && \
+            echo 'Starting docker teardown for $worktree_name...' && \
+            docker compose -f docker-compose.worktree-override.yml down --rmi local --volumes --remove-orphans && \
+            echo 'Stopping containers...' && \
+            docker ps -q --filter 'name=letterpress-app-${worktree_name}' | xargs -r docker stop && \
+            echo 'Removing containers...' && \
+            docker ps -aq --filter 'name=letterpress-app-${worktree_name}' | xargs -r docker rm -f && \
+            echo '===TEARDOWN_COMPLETE===' && \
+            sleep 2"
+        
+        # Wait for teardown to complete by checking for the completion marker
+        local max_wait=60  # Maximum 60 seconds
+        local wait_count=0
+        
+        while [[ $wait_count -lt $max_wait ]]; do
+            # Check if the window still exists
+            if ! tmux list-windows -F '#{window_name}' | grep -q "^${teardown_window}$"; then
+                # Window has closed, teardown is complete
+                tmux display-message "Docker teardown completed"
+                break
+            fi
+            
+            # Capture the window content and check for completion
+            if tmux capture-pane -t ":${teardown_window}" -p 2>/dev/null | grep -q "===TEARDOWN_COMPLETE==="; then
+                tmux display-message "Docker teardown completed"
+                # Kill the teardown window
+                tmux kill-window -t ":${teardown_window}" 2>/dev/null
+                break
+            fi
+            
+            sleep 1
+            ((wait_count++))
+            
+            # Show progress every 5 seconds
+            if [[ $((wait_count % 5)) -eq 0 ]]; then
+                tmux display-message "Waiting for docker teardown... ($wait_count/$max_wait)"
+            fi
+        done
+        
+        if [[ $wait_count -ge $max_wait ]]; then
+            tmux display-message -d 2000 "Warning: Docker teardown timeout - proceeding anyway"
+            # Kill the teardown window if it's still running
+            tmux kill-window -t ":${teardown_window}" 2>/dev/null
+        fi
+    fi
     
     tmux display-message "Deleting worktree '$worktree_name' (prefix: '$branch_prefix')..."
     

@@ -7,3 +7,7 @@
 .gitworktrees
 .gitworktrees/*
 .git/*
+.claude/settings.local.json
+docker-compose.worktree-override.yml
+**/lib/tasks/custom_seed.rake
+**/db/seeds/init.rb

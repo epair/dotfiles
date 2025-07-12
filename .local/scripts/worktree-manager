@@ -66,8 +66,57 @@ if [[ "$command" == "add" && -n "$worktree_name" ]]; then
   git worktree add "$worktree_dir" "$branch_name" > /dev/null 2>&1
   setup_worktree_env
 elif [[ "$command" == "remove" && -n "$worktree_name" ]]; then
-  git worktree remove --force "$worktree_name"
-  git branch -D "$branch_name"
+  echo "Removing worktree: $worktree_name"
+  echo "Worktree dir: $worktree_dir"
+  echo "Current dir: $(pwd)"
+  
+  # Change to the parent directory where .bare is located
+  cd "$parent_dir" || exit 1
+  
+  # First, check if the worktree is registered with git
+  if git worktree list | grep -q "$worktree_name"; then
+    echo "Worktree is registered with git, removing..."
+    git worktree remove --force "$worktree_name" 2>&1
+  else
+    echo "Worktree not registered with git"
+  fi
+  
+  # Clean up the directory if it still exists
+  if [[ -d "$worktree_dir" ]]; then
+    echo "Directory still exists at: $worktree_dir"
+    
+    # First try without sudo
+    if rm -rf "$worktree_dir" 2>/dev/null; then
+      echo "Directory removed successfully"
+    else
+      echo "Need elevated permissions to remove directory"
+      
+      # Check if we're in a tmux session
+      if [[ -n "$TMUX" ]]; then
+        # Use tmux to prompt for sudo password
+        tmux display-message "Removing worktree directory requires sudo access..."
+        tmux run-shell "sudo rm -rf '$worktree_dir'"
+      else
+        # Regular sudo if not in tmux
+        sudo rm -rf "$worktree_dir"
+      fi
+      
+      # Verify removal
+      if [[ -d "$worktree_dir" ]]; then
+        echo "ERROR: Failed to remove directory!"
+        exit 1
+      else
+        echo "Directory removed with elevated permissions"
+      fi
+    fi
+  fi
+  
+  # Prune any stale worktree entries
+  git worktree prune
+  
+  # Remove the branch if it exists
+  echo "Removing branch: $branch_name"
+  git branch -D "$branch_name" 2>&1 || echo "Branch '$branch_name' doesn't exist"
 else
   echo 'either no command or branch name specified'
   exit 1

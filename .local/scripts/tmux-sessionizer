@@ -13,10 +13,22 @@ has_session() {
 }
 
 hydrate() {
+  local script_path=""
+  local script_dir=""
+  
   if [ -f "$2/.tmux-sessionizer" ]; then
-    tmux send-keys -t "$1" "source $2/.tmux-sessionizer" c-M
+    script_path="$2/.tmux-sessionizer"
+    script_dir="$2"
+  elif [ -f "$(dirname "$2")/.tmux-sessionizer" ]; then
+    script_path="$(dirname "$2")/.tmux-sessionizer"
+    script_dir="$(dirname "$2")"
   elif [ -f "$HOME/.tmux-sessionizer" ]; then
-    tmux send-keys -t "$1" "source $HOME/.tmux-sessionizer" c-M
+    script_path="$HOME/.tmux-sessionizer"
+    script_dir="$HOME"
+  fi
+  
+  if [ -n "$script_path" ]; then
+    tmux run-shell -b -t "$1" -c "$script_dir" "bash '.tmux-sessionizer' && tmux display-message -t '$1' 'Session hydrated successfully' || tmux display-message -t '$1' 'Session hydration failed'"
   fi
 }
 
