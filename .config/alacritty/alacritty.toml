@@ -15,7 +15,7 @@ x = 25
 y = 20
 
 [font]
-size = 20.0
+size = 18.0
 normal.family = "Hack Nerd Font"
 bold.family = "Hack Nerd Font"
 italic.family = "Hack Nerd Font"
