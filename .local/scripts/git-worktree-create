@@ -3,6 +3,9 @@
 # Create a new git worktree with tmux prompts
 # Works with any git repository that has a .bare directory
 
+# Default branch prefix
+DEFAULT_PREFIX="ep/"
+
 # Function to find git root with .bare directory
 find_git_worktree_root() {
     local current_dir="$PWD"
@@ -19,42 +22,6 @@ find_git_worktree_root() {
     return 1
 }
 
-# Function to get default branch prefix
-get_default_prefix() {
-    # Try to get user initials from git config
-    local user_name=$(git config --get user.name 2>/dev/null)
-    local user_email=$(git config --get user.email 2>/dev/null)
-    
-    # Check for custom worktree prefix config
-    local custom_prefix=$(git config --get worktree.defaultPrefix 2>/dev/null)
-    if [[ -n "$custom_prefix" ]]; then
-        echo "$custom_prefix"
-        return
-    fi
-    
-    # Try to extract initials from name
-    if [[ -n "$user_name" ]]; then
-        # Extract initials (first letter of each word)
-        local initials=$(echo "$user_name" | sed 's/[^ ]\+ */\U&/g' | sed 's/\([A-Z]\)[^ ]*/\1/g' | tr -d ' ' | tr '[:upper:]' '[:lower:]')
-        if [[ -n "$initials" ]]; then
-            echo "${initials}/"
-            return
-        fi
-    fi
-    
-    # Try to extract from email
-    if [[ -n "$user_email" ]]; then
-        # Extract part before @ and use first two characters
-        local email_prefix=$(echo "$user_email" | cut -d'@' -f1 | cut -c1-2)
-        if [[ -n "$email_prefix" ]]; then
-            echo "${email_prefix}/"
-            return
-        fi
-    fi
-    
-    # Default fallback
-    echo ""
-}
 
 # Find the worktree root
 WORKTREE_ROOT=$(find_git_worktree_root)
@@ -75,7 +42,7 @@ create_worktree() {
     
     if [[ "$remaining" == "$input" ]]; then
         # No space found, so no prefix was provided
-        local branch_prefix=$(get_default_prefix)
+        local branch_prefix="$DEFAULT_PREFIX"
     else
         # Prefix was provided
         local branch_prefix="$remaining"
@@ -109,10 +76,7 @@ create_worktree() {
 if [[ $# -ge 1 ]]; then
     create_worktree "$*"
 else
-    # Get default prefix for prompt
-    default_prefix=$(get_default_prefix)
-    
     # Show single prompt for both inputs
-    tmux command-prompt -p "Enter: worktree-name [prefix] (default prefix: $default_prefix):" \
+    tmux command-prompt -p "Enter: worktree-name [prefix] (default prefix: $DEFAULT_PREFIX):" \
         "run-shell 'git-worktree-create %%'"
 fi
