@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Restart letterpress webapp
-
-tmux new-window -n "server restart" -d 'zsh -i -c "stop; up && tmux display-message \"letterpress-app webapp restarted\""'
