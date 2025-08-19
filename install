@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+echo "Installing homebrew..."
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo "Homebrew installed"
+mkdir ~/code
+mkdir -p ~/.local/share
+mkdir -p ~/.local/state
+
+echo "Setting up symlinks..."
+brew install stow
+mkdir -p ~/.config/tmux/plugins
+cd "$HOME/code/dotfiles"
+stow --dir="$HOME/code/dotfiles" --target="$HOME" .
+echo "Symlinks setup complete"
+echo "Please restart terminal, then run install_brew"
+
+

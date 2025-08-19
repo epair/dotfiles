@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+echo "Installing brew formulae and casks..."
+echo "You'll need to enter your password several times."
+brew bundle --global
+echo "Brewfile install complete"
+
+echo "Re-syncing symlinks..."
+cd "$HOME/code/dotfiles"
+stow --adopt ~/code/dotfiles
+git restore .
+stow -R --dir="$HOME/code/dotfiles" --target="$HOME" .
+echo "Symlinks complete"
+
+echo "Removing icons from dock.."
+dockutil --remove all
+
+echo "Setup GitHub ssh key and then run install_git"
+echo "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent"

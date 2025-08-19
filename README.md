@@ -1,7 +1,7 @@
 # dotfiles
 
 ```bash
+xcode-select --install
 git clone https://github.com/epair/dotfiles.git ~/code/dotfiles
-cd ~/code/dotfiles
-./local/scripts/denv install
+~/code/dotfiles/install
 ```

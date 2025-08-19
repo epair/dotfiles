@@ -34,4 +34,7 @@ git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 touch .worktree-setup
 chmod +x .worktree-setup
 
-echo 'The file .worktree-setup is an executable that will be run after each worktree creation; Add necessary setup there'
+touch .worktree-teardown
+chmod +x .worktree-teardown
+
+echo 'The files .worktree-setup and .worktree-teardown are executables that will be run after each worktree creation and deletion; Add necessary setup there'

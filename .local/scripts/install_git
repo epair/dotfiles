@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+echo "Cloning repositories..."
+mkdir -p ~/code/postie
+git-clone-bare-for-worktrees git@github.com:getletterpress/letterpress-app.git ~/code/postie/letterpress-app
+git clone git@github.com:epair/work-dotfiles.git ~/code/postie/work-dotfiles
+rsync -av --exclude='.git' ~/code/postie/work-dotfiles/ ~/code/postie/letterpress-app/
+echo "Setup is complete."
