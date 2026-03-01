@@ -6,7 +6,7 @@ return {
       local lint = require("lint")
 
       lint.linters_by_ft = {
-        ruby = { "rubocop" },
+        -- ruby linting is handled by ruby_lsp's built-in rubocop addon
       }
 
       local function debounce(ms, fn)

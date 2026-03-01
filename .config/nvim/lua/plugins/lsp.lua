@@ -214,8 +214,13 @@ return {
           end,
           ["ruby_lsp"] = function()
             local lspconfig = require("lspconfig")
+            local letterpress_path = vim.fn.resolve(vim.fn.expand("~/code/postie/letterpress-app"))
             lspconfig.ruby_lsp.setup {
-              cmd_env = { BUNDLE_GEMFILE = vim.fn.getenv("GLOBAL_GEMFILE") },
+              on_new_config = function(new_config, root_dir)
+                if vim.startswith(root_dir, letterpress_path) then
+                  new_config.cmd_env = { BUNDLE_GEMFILE = "" }
+                end
+              end,
             }
           end
         }
