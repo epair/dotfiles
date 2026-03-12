@@ -94,6 +94,41 @@ local function search_todos_telescope()
   }):find()
 end
 
+local function changed_files_telescope()
+  vim.fn.system('git rev-parse --git-dir')
+  if vim.v.shell_error ~= 0 then
+    vim.notify('Not in a git repository', vim.log.levels.ERROR)
+    return
+  end
+
+  local files = vim.fn.systemlist('git diff --name-only origin/main...')
+  if vim.v.shell_error ~= 0 then
+    vim.notify('Failed to diff against main', vim.log.levels.ERROR)
+    return
+  end
+
+  files = vim.tbl_filter(function(f) return f ~= '' end, files)
+
+  if #files == 0 then
+    vim.notify('No changed files relative to main', vim.log.levels.INFO)
+    return
+  end
+
+  local pickers = require('telescope.pickers')
+  local finders = require('telescope.finders')
+  local conf = require('telescope.config').values
+
+  pickers.new({}, {
+    prompt_title = 'Changed Files (vs main)',
+    finder = finders.new_table({
+      results = files,
+      entry_maker = require('telescope.make_entry').gen_from_file(),
+    }),
+    sorter = conf.file_sorter({}),
+    previewer = conf.file_previewer({}),
+  }):find()
+end
+
 return {
 	'nvim-telescope/telescope.nvim',
 	tag = '0.1.8',
@@ -124,5 +159,6 @@ return {
 		{ '<leader>gs', function() require('telescope.builtin').git_status(); end, desc = 'Telescope git files' },
     { '<leader>fb', function() require('telescope.builtin').buffers(); end, desc = 'Telescope buffers' },
 		{ '<leader>gt', search_todos_telescope, desc = 'Search TODOs in git changes' },
+		{ '<leader>gf', changed_files_telescope, desc = 'Changed files vs main' },
 	}
 }
