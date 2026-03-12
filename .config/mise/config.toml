@@ -1,7 +1,10 @@
 [tools]
-node = 'latest'
+"gem:rails" = "latest"
+node = "latest"
+"npm:@hubspot/cli" = "latest"
 python = 'latest'
 ruby = "3.3.8"
 
 [settings]
 experimental = true
+idiomatic_version_file_enable_tools = ["ruby"]
