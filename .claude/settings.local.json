@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(/Users/emmettpair/.claude/statusline-command.sh)",
+      "WebSearch",
+      "Bash(nvim:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(head:*)"
+    ]
+  }
+}
