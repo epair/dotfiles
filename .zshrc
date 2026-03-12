@@ -1,5 +1,6 @@
 export ZSH="$HOME/.oh-my-zsh"
 export XDG_CONFIG_HOME="$HOME/.config"
+export GPG_TTY=$(tty)
 
 if [[ -f "/opt/homebrew/bin/brew" ]] then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -49,3 +50,8 @@ zle     -N            tmux-sessions
 bindkey -M emacs '^t' tmux-sessions
 bindkey -M vicmd '^t' tmux-sessions
 bindkey -M viins '^t' tmux-sessions
+
+export GPG_TTY=$(tty)
+
+# opencode
+export PATH=/Users/emmettpair/.opencode/bin:$PATH
