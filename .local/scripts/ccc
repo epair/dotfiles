@@ -1,0 +1,74 @@
+#!/bin/bash
+
+case "$1" in
+  plan)
+    shift
+    CLAUDE_CMD="claude --permission-mode plan --allow-dangerously-skip-permissions"
+    if [ -n "$1" ]; then
+      CLAUDE_CMD="$CLAUDE_CMD $(printf '%q' "$1")"
+    elif ! [ -t 0 ]; then
+      CLAUDE_CMD="$CLAUDE_CMD $(printf '%q' "$(cat)")"
+    fi
+    HEADLESS=false
+    ;;
+  exec)
+    shift
+    if [ -n "$1" ]; then
+      PROMPT="$1"
+    elif ! [ -t 0 ]; then
+      PROMPT="$(cat)"
+    else
+      echo "Usage: ccc exec <prompt>"; exit 1
+    fi
+    CLAUDE_CMD="claude --dangerously-skip-permissions -p $(printf '%q' "$PROMPT")"
+    HEADLESS=true
+    ;;
+  *)
+    CLAUDE_CMD="claude $*"
+    ;;
+esac
+
+# Find repo root: walk up from CWD looking for sibling .bare directory
+DIR="$PWD"
+REPO_ROOT=""
+while [ "$DIR" != "/" ]; do
+  PARENT="$(dirname "$DIR")"
+  if [ -d "$PARENT/.bare" ]; then
+    REPO_ROOT="$PARENT"
+    break
+  fi
+  DIR="$PARENT"
+done
+
+if [ -z "$REPO_ROOT" ]; then
+  echo "Error: Not inside a grove worktree (no .bare directory found in parent directories)"
+  exit 1
+fi
+
+export CLAUDE_DOCKER_DIR="$REPO_ROOT/.grove"
+
+if [ ! -f "$CLAUDE_DOCKER_DIR/docker-compose.claude.yml" ]; then
+  echo "Error: No docker-compose.claude.yml found in $CLAUDE_DOCKER_DIR"
+  exit 1
+fi
+
+export APP_DIR="$PWD"
+
+COMPOSE_ARGS="-f $CLAUDE_DOCKER_DIR/docker-compose.claude.yml -p $(basename $PWD)"
+
+# Build image if it doesn't exist yet
+if ! docker compose $COMPOSE_ARGS images -q 2>/dev/null | grep -q .; then
+  docker compose $COMPOSE_ARGS build -q
+fi
+
+DOCKER_RUN_FLAGS="--rm"
+[ "$HEADLESS" = "true" ] && DOCKER_RUN_FLAGS="$DOCKER_RUN_FLAGS -T"
+
+if [ "$HEADLESS" = "true" ]; then
+  docker compose $COMPOSE_ARGS run $DOCKER_RUN_FLAGS claude \
+    bash -c "(bundle check > /dev/null 2>&1 || bundle install) && $CLAUDE_CMD"
+else
+  clear
+  docker compose $COMPOSE_ARGS run $DOCKER_RUN_FLAGS claude \
+    bash -c "(bundle check > /dev/null 2>&1 || bundle install) && clear && $CLAUDE_CMD" < /dev/tty
+fi
