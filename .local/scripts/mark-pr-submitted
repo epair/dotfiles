@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# Mark a worktree as having a submitted PR by adding PR_SUBMITTED=true to .env
+
+# Function to find git root with .bare directory
+find_git_worktree_root() {
+    local current_dir="$PWD"
+    
+    # Check current directory and parent directories for .bare
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -d "$current_dir/.bare" ]]; then
+            # We're in a worktree parent, get the actual worktree
+            if [[ "$PWD" != "$current_dir" ]]; then
+                echo "$PWD"
+            else
+                echo "$current_dir"
+            fi
+            return 0
+        fi
+        # Check if parent has .bare (we're in a worktree)
+        if [[ -d "$(dirname "$current_dir")/.bare" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+    
+    return 1
+}
+
+# Find the current worktree directory
+WORKTREE_DIR=$(find_git_worktree_root)
+
+if [[ -z "$WORKTREE_DIR" ]]; then
+    echo "Error: Not in a git worktree with .bare directory"
+    exit 1
+fi
+
+ENV_FILE="$WORKTREE_DIR/.env"
+
+# Check if .env exists
+if [[ -f "$ENV_FILE" ]]; then
+    # Check if PR_SUBMITTED already exists in the file
+    if grep -q "^PR_SUBMITTED=" "$ENV_FILE"; then
+        # Update existing value
+        sed -i '' 's/^PR_SUBMITTED=.*/PR_SUBMITTED=true/' "$ENV_FILE"
+        echo "Updated PR_SUBMITTED=true in $ENV_FILE"
+    else
+        # Append to file
+        echo "PR_SUBMITTED=true" >> "$ENV_FILE"
+        echo "Added PR_SUBMITTED=true to $ENV_FILE"
+    fi
+else
+    # Create new .env file
+    echo "PR_SUBMITTED=true" > "$ENV_FILE"
+    echo "Created $ENV_FILE with PR_SUBMITTED=true"
+fi
+
+# Display the worktree name for confirmation
+WORKTREE_NAME=$(basename "$WORKTREE_DIR")
+echo "Marked worktree '$WORKTREE_NAME' as having submitted PR"

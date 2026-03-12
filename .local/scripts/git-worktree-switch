@@ -73,19 +73,33 @@ while IFS= read -r worktree; do
             hotkey="$index"
         fi
         
+        # Check for PR status and WEB_PORT
+        pr_icon=""
+        port_display=""
+        if [[ -f "$worktree_path/.env" ]]; then
+            if grep -q "^PR_SUBMITTED=true" "$worktree_path/.env" 2>/dev/null; then
+                pr_icon=" [PR]"
+            fi
+            # Extract WEB_PORT if it exists
+            web_port=$(grep "^WEB_PORT=" "$worktree_path/.env" 2>/dev/null | cut -d'=' -f2)
+            if [[ -n "$web_port" ]]; then
+                port_display=" ($web_port)"
+            fi
+        fi
+        
         # Check if session exists
+        session_marker=""
         if tmux has-session -t "$worktree" 2>/dev/null; then
-            if [[ -n "$hotkey" ]]; then
-                menu_items+=("$worktree •" "$hotkey" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
-            else
-                menu_items+=("$worktree •" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
-            fi
+            session_marker=" •"
+        fi
+        
+        # Build display name
+        display_name="${worktree}${port_display}${pr_icon}${session_marker}"
+        
+        if [[ -n "$hotkey" ]]; then
+            menu_items+=("$display_name" "$hotkey" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
         else
-            if [[ -n "$hotkey" ]]; then
-                menu_items+=("$worktree" "$hotkey" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
-            else
-                menu_items+=("$worktree" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
-            fi
+            menu_items+=("$display_name" "" "run-shell 'tmux-sessionizer \"$worktree_path\"'")
         fi
         
         ((index++))

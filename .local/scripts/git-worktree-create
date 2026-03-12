@@ -31,9 +31,17 @@ if [[ -z "$WORKTREE_ROOT" ]]; then
     exit 1
 fi
 
+# Function to prompt for worktree type
+prompt_for_type() {
+    local worktree_info="$1"
+    tmux command-prompt -p "Worktree type (minimal/full or press Enter to skip):" \
+        "run-shell 'git-worktree-create \"$worktree_info\" \"%%\"'"
+}
+
 # Function to create worktree with given parameters
 create_worktree() {
     local input="$1"
+    local worktree_type="$2"
     
     # Parse input: "worktree_name [prefix]"
     # If prefix is not provided, use default
@@ -60,9 +68,15 @@ create_worktree() {
     }
     
     # Create the worktree
-    tmux display-message "Creating worktree '$worktree_name' with branch prefix '$branch_prefix'..."
+    if [[ -n "$worktree_type" ]]; then
+        tmux display-message "Creating '$worktree_type' worktree '$worktree_name' with branch prefix '$branch_prefix'..."
+        WORKTREE_PREFIX="$branch_prefix" worktree-manager add "$worktree_name" "$worktree_type"
+    else
+        tmux display-message "Creating worktree '$worktree_name' with branch prefix '$branch_prefix'..."
+        WORKTREE_PREFIX="$branch_prefix" worktree-manager add "$worktree_name"
+    fi
     
-    if WORKTREE_PREFIX="$branch_prefix" worktree-manager add "$worktree_name"; then
+    if [[ $? -eq 0 ]]; then
         # Success - switch to the new worktree session
         # Small delay to ensure worktree is fully created
         sleep 0.5
@@ -72,11 +86,15 @@ create_worktree() {
     fi
 }
 
-# If called with arguments, execute the creation
-if [[ $# -ge 1 ]]; then
-    create_worktree "$*"
+# If called with arguments, handle the flow
+if [[ $# -eq 1 ]]; then
+    # First argument is the worktree info, prompt for type
+    prompt_for_type "$1"
+elif [[ $# -ge 2 ]]; then
+    # Both arguments provided, create directly
+    create_worktree "$1" "$2"
 else
-    # Show single prompt for both inputs
+    # No arguments, show initial prompt
     tmux command-prompt -p "Enter: worktree-name [prefix] (default prefix: $DEFAULT_PREFIX):" \
-        "run-shell 'git-worktree-create %%'"
+        "run-shell 'git-worktree-create \"%%\"'"
 fi

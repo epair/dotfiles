@@ -38,11 +38,14 @@ else
   exit 1
 fi
 
+extra_args=()
 while [[ $# -gt 0 ]]; do
   if [[ $1 == "add" || $1 == "remove" ]]; then
     command="$1"
-  else
+  elif [[ -z "$worktree_name" ]]; then
     worktree_name="$1"
+  else
+    extra_args+=("$1")
   fi
   shift
 done
@@ -51,8 +54,8 @@ worktree_dir="$parent_dir/$worktree_name"
 branch_name="$WORKTREE_PREFIX$worktree_name"
 
 setup_worktree_env() {
-  if [[ -x "$parent_dir/.worktree-setup" ]]; then
-    "$parent_dir/.worktree-setup" "$worktree_dir"
+  if [[ -x "$parent_dir/.grove/.setup" ]]; then
+    "$parent_dir/.grove/.setup" "$worktree_dir" "${extra_args[@]}"
   fi
 }
 
@@ -69,38 +72,32 @@ elif [[ "$command" == "remove" && -n "$worktree_name" ]]; then
   echo "Removing worktree: $worktree_name"
   echo "Worktree dir: $worktree_dir"
   echo "Current dir: $(pwd)"
-  
-  # Change to the parent directory where .bare is located
-  cd "$parent_dir" || exit 1
-  
+
+  # Change to the .bare directory (the actual git directory) for git commands
+  cd "$parent_dir/.bare" || exit 1
+
   # First, check if the worktree is registered with git
   if git worktree list | grep -q "$worktree_name"; then
     echo "Worktree is registered with git, removing..."
-    git worktree remove --force "$worktree_name" 2>&1
+    git worktree remove --force "$worktree_dir" 2>&1
   else
     echo "Worktree not registered with git"
   fi
-  
+
+  # Change back to parent directory for directory operations
+  cd "$parent_dir" || exit 1
+
   # Clean up the directory if it still exists
   if [[ -d "$worktree_dir" ]]; then
     echo "Directory still exists at: $worktree_dir"
-    
+
     # First try without sudo
     if rm -rf "$worktree_dir" 2>/dev/null; then
       echo "Directory removed successfully"
     else
       echo "Need elevated permissions to remove directory"
-      
-      # Check if we're in a tmux session
-      if [[ -n "$TMUX" ]]; then
-        # Use tmux to prompt for sudo password
-        tmux display-message "Removing worktree directory requires sudo access..."
-        tmux run-shell "sudo rm -rf '$worktree_dir'"
-      else
-        # Regular sudo if not in tmux
-        sudo rm -rf "$worktree_dir"
-      fi
-      
+      sudo rm -rf "$worktree_dir"
+
       # Verify removal
       if [[ -d "$worktree_dir" ]]; then
         echo "ERROR: Failed to remove directory!"
@@ -110,13 +107,18 @@ elif [[ "$command" == "remove" && -n "$worktree_name" ]]; then
       fi
     fi
   fi
-  
+
+  # Change back to .bare directory for git commands
+  cd "$parent_dir/.bare" || exit 1
+
   # Prune any stale worktree entries
   git worktree prune
-  
+
   # Remove the branch if it exists
   echo "Removing branch: $branch_name"
-  git branch -D "$branch_name" 2>&1 || echo "Branch '$branch_name' doesn't exist"
+  if ! git branch -D "$branch_name" 2>&1; then
+    echo "Failed to delete branch '$branch_name'"
+  fi
 else
   echo 'either no command or branch name specified'
   exit 1

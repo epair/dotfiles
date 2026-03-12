@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+# Create a new git worktree via CLI arguments (non-interactive)
+# Usage: create-worktree <worktree-name> [worktree-type]
+# Works with any git repository that has a .bare directory
+
+# Hardcoded branch prefix
+BRANCH_PREFIX="ep/"
+
+# Function to find git root with .bare directory
+find_git_worktree_root() {
+    local current_dir="$PWD"
+    
+    # Check current directory and parent directories for .bare
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -d "$current_dir/.bare" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+    
+    return 1
+}
+
+# Parse arguments
+worktree_name="$1"
+worktree_type="$2"
+
+# Validate required argument
+if [[ -z "$worktree_name" ]]; then
+    echo "Error: Worktree name is required"
+    echo "Usage: $(basename "$0") <worktree-name> [worktree-type]"
+    echo "  worktree-name: Name of the worktree to create (required)"
+    echo "  worktree-type: Type of worktree setup (minimal/full, optional)"
+    exit 1
+fi
+
+# Find the worktree root
+WORKTREE_ROOT=$(find_git_worktree_root)
+
+if [[ -z "$WORKTREE_ROOT" ]]; then
+    echo "Error: Not in a git worktree with .bare directory"
+    exit 1
+fi
+
+# Change to worktree root directory
+cd "$WORKTREE_ROOT" || {
+    echo "Error: Cannot access worktree root directory"
+    exit 1
+}
+
+# Create the worktree
+if [[ -n "$worktree_type" ]]; then
+    echo "Creating '$worktree_type' worktree '$worktree_name' with branch prefix '$BRANCH_PREFIX'..."
+    WORKTREE_PREFIX="$BRANCH_PREFIX" worktree-manager add "$worktree_name" "$worktree_type"
+else
+    echo "Creating worktree '$worktree_name' with branch prefix '$BRANCH_PREFIX'..."
+    WORKTREE_PREFIX="$BRANCH_PREFIX" worktree-manager add "$worktree_name"
+fi
+
+if [[ $? -eq 0 ]]; then
+    echo "Successfully created worktree at: $WORKTREE_ROOT/$worktree_name"
+    # Small delay to ensure worktree is fully created
+    sleep 0.5
+    # Switch to the new worktree session
+    tmux-sessionizer "$WORKTREE_ROOT/$worktree_name"
+else
+    echo "Error: Failed to create worktree '$worktree_name'"
+    exit 1
+fi

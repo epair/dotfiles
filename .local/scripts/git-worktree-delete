@@ -177,25 +177,41 @@ index=1
 
 while IFS= read -r worktree; do
     if [[ -n "$worktree" ]]; then
+        worktree_path="$WORKTREE_ROOT/$worktree"
+        
         # Determine hotkey (only for first 9 items)
         hotkey=""
         if [[ $index -le 9 ]]; then
             hotkey="$index"
         fi
         
+        # Check for PR status and WEB_PORT
+        pr_icon=""
+        port_display=""
+        if [[ -f "$worktree_path/.env" ]]; then
+            if grep -q "^PR_SUBMITTED=true" "$worktree_path/.env" 2>/dev/null; then
+                pr_icon=" [PR]"
+            fi
+            # Extract WEB_PORT if it exists
+            web_port=$(grep "^WEB_PORT=" "$worktree_path/.env" 2>/dev/null | cut -d'=' -f2)
+            if [[ -n "$web_port" ]]; then
+                port_display=" ($web_port)"
+            fi
+        fi
+        
         # Check if session exists
+        session_marker=""
         if tmux has-session -t "$worktree" 2>/dev/null; then
-            if [[ -n "$hotkey" ]]; then
-                menu_items+=("$worktree •" "$hotkey" "run-shell 'git-worktree-delete $worktree'")
-            else
-                menu_items+=("$worktree •" "" "run-shell 'git-worktree-delete $worktree'")
-            fi
+            session_marker=" •"
+        fi
+        
+        # Build display name
+        display_name="${worktree}${port_display}${pr_icon}${session_marker}"
+        
+        if [[ -n "$hotkey" ]]; then
+            menu_items+=("$display_name" "$hotkey" "run-shell 'git-worktree-delete $worktree'")
         else
-            if [[ -n "$hotkey" ]]; then
-                menu_items+=("$worktree" "$hotkey" "run-shell 'git-worktree-delete $worktree'")
-            else
-                menu_items+=("$worktree" "" "run-shell 'git-worktree-delete $worktree'")
-            fi
+            menu_items+=("$display_name" "" "run-shell 'git-worktree-delete $worktree'")
         fi
         
         ((index++))

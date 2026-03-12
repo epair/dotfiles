@@ -1,5 +1,28 @@
 #!/usr/bin/env bash
 
+# TMUX Sessionizer
+#
+# A smart tmux session manager that creates and switches between project-based sessions.
+#
+# Usage:
+#   tmux-sessionizer                    # Interactive mode: shows fzf picker for ~/code directories
+#   tmux-sessionizer <session_name>     # Switch to existing session by name
+#   tmux-sessionizer <directory_path>   # Create/switch to session for specific directory
+#
+# Features:
+#   - Creates sessions named after directory basename (dots replaced with dashes)
+#   - Works both inside and outside tmux (switches client vs attaches session)
+#   - Supports session hydration via .tmux-sessionizer files in project directories
+#   - Automatically creates new sessions in detached mode when needed
+#
+# Session Hydration:
+#   Place a .tmux-sessionizer file in your project directory to run setup commands
+#   when the session is created. The script looks for this file in:
+#   1. The project directory itself
+#   2. The parent directory
+#   3. Your home directory (as fallback)
+#
+
 switch_to() {
   if [[ -z $TMUX ]]; then
     tmux attach-session -t "$1"

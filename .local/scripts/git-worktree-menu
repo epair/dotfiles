@@ -37,8 +37,7 @@ menu_items=(
     "Switch to Worktree" "s" "run-shell 'git-worktree-switch'"
     "Create New Worktree" "c" "run-shell 'git-worktree-create'"
     "Delete Worktree" "d" "run-shell 'git-worktree-delete'"
-    "" "" ""  # Separator
-    "Submit PR" "p" "run-shell 'git-worktree-pr'"
+    "Cleanup Merged Worktrees" "m" "run-shell 'git-worktree-auto-cleanup'"
 )
 
 # Display the menu
