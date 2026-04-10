@@ -164,15 +164,49 @@ return {
       })
     end,
     config = function()
-      local lsp_defaults = require('lspconfig').util.default_config
+      local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-      -- Add cmp_nvim_lsp capabilities settings to lspconfig
-      -- This should be executed before you configure any language server
-      lsp_defaults.capabilities = vim.tbl_deep_extend(
-        'force',
-        lsp_defaults.capabilities,
-        require('cmp_nvim_lsp').default_capabilities()
-      )
+      -- Apply cmp capabilities to all LSP servers
+      vim.lsp.config('*', {
+        capabilities = cmp_capabilities,
+      })
+
+      -- Configure individual servers
+      vim.lsp.config('lua_ls', {
+        settings = {
+          Lua = {
+            runtime = { version = "Lua 5.1" },
+            diagnostics = {
+              globals = { "bit", "vim", "it", "describe", "before_each", "after_each" },
+            }
+          }
+        }
+      })
+
+      -- Start ruby_lsp manually to conditionally set cmd_env per root_dir
+      -- (on_new_config is not supported in the native vim.lsp.config API)
+      local letterpress_path = vim.fn.resolve(vim.fn.expand("~/code/postie/letterpress-app"))
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'ruby',
+        callback = function(args)
+          local root = vim.fs.root(args.buf, { 'Gemfile', '.git' })
+          local cmd_env = {}
+          if root and vim.startswith(root, letterpress_path) then
+            cmd_env = { BUNDLE_GEMFILE = "" }
+          end
+          vim.lsp.start({
+            name = 'ruby_lsp',
+            cmd = { 'ruby-lsp' },
+            root_dir = root,
+            cmd_env = cmd_env,
+            capabilities = cmp_capabilities,
+            init_options = {
+              formatter = "none",
+              linters = {},
+            },
+          })
+        end,
+      })
 
       -- LspAttach is where you enable features that only work
       -- if there is a language server active in the file
@@ -192,39 +226,12 @@ return {
         end,
       })
 
+      -- Mason handles installation, then enable lua_ls
       require('mason-lspconfig').setup({
         ensure_installed = { "lua_ls", "ruby_lsp" },
-        handlers = {
-          function(server_name)
-            require('lspconfig')[server_name].setup({})
-          end,
-          ["lua_ls"] = function()
-            local lspconfig = require("lspconfig")
-            lspconfig.lua_ls.setup {
-              capabilities = lsp_defaults.capabilities,
-              settings = {
-                Lua = {
-                  runtime = { version = "Lua 5.1" },
-                  diagnostics = {
-                    globals = { "bit", "vim", "it", "describe", "before_each", "after_each" },
-                  }
-                }
-              }
-            }
-          end,
-          ["ruby_lsp"] = function()
-            local lspconfig = require("lspconfig")
-            local letterpress_path = vim.fn.resolve(vim.fn.expand("~/code/postie/letterpress-app"))
-            lspconfig.ruby_lsp.setup {
-              on_new_config = function(new_config, root_dir)
-                if vim.startswith(root_dir, letterpress_path) then
-                  new_config.cmd_env = { BUNDLE_GEMFILE = "" }
-                end
-              end,
-            }
-          end
-        }
       })
+
+      vim.lsp.enable('lua_ls')
     end
   },
   {
