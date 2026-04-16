@@ -125,7 +125,11 @@ local function changed_files_telescope()
       entry_maker = require('telescope.make_entry').gen_from_file(),
     }),
     sorter = conf.file_sorter({}),
-    previewer = conf.file_previewer({}),
+    previewer = require('telescope.previewers').new_termopen_previewer({
+      get_command = function(entry)
+        return { 'git', 'diff', 'origin/main...', '--', entry.path or entry.value }
+      end,
+    }),
   }):find()
 end
 
