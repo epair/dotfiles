@@ -1,5 +1,6 @@
 [tools]
 "gem:rails" = "latest"
+lua-language-server = "latest"
 node = "latest"
 "npm:@hubspot/cli" = "latest"
 python = 'latest'

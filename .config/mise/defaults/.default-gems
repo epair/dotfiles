@@ -4,3 +4,4 @@ rubocop-rails
 rubocop-capybara
 rubocop-factory_bot
 brakeman
+ruby-lsp
