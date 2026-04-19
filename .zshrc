@@ -15,7 +15,6 @@ export LANG=en_US.UTF-8
 export PATH=$HOME/.local/scripts:$PATH
 
 source <(fzf --zsh)
-eval "$(zoxide init zsh --cmd cd)"
 eval "$(mise activate zsh)"
 
 if [[ -n $SSH_CONNECTION ]]; then
@@ -27,10 +26,11 @@ fi
 autoload -Uz compinit && compinit
 
 alias ls=eza
-alias up="./bin/docker/up"
-alias down="./bin/docker/down"
-alias stop="./bin/docker/stop"
-alias con="./bin/docker/console"
+
+alias up="../.gitgrove/bin/up && sed -i '' 's/^DOCKER_STATUS=.*/DOCKER_STATUS=running/' .env "
+# alias down="./bin/docker/down"
+alias stop="../.gitgrove/bin/stop && sed -i '' 's/^DOCKER_STATUS=.*/DOCKER_STATUS=running/' .env"
+alias con="../.gitgrove/bin/console"
 
 function tmux-sessions() {
   {
@@ -53,5 +53,5 @@ bindkey -M viins '^t' tmux-sessions
 
 export GPG_TTY=$(tty)
 
-# opencode
-export PATH=/Users/emmettpair/.opencode/bin:$PATH
+# go-installed binaries (agent-executor, etc.)
+export PATH=$HOME/go/bin:$PATH
