@@ -3,7 +3,9 @@ return {
   event = 'InsertEnter',
   dependencies = { 'hrsh7th/nvim-cmp' },
   config = function()
-    require('nvim-autopairs').setup {}
+    local npairs = require('nvim-autopairs')
+    npairs.setup()
+    npairs.add_rules(require('nvim-autopairs.rules.endwise-ruby'))
     -- If you want to automatically add `(` after selecting a function or method
     local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
     local cmp = require 'cmp'
