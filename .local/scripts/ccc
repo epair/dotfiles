@@ -45,7 +45,7 @@ if [ -z "$REPO_ROOT" ]; then
   exit 1
 fi
 
-export CLAUDE_DOCKER_DIR="$REPO_ROOT/.grove"
+export CLAUDE_DOCKER_DIR="$REPO_ROOT/.gitgrove"
 
 if [ ! -f "$CLAUDE_DOCKER_DIR/docker-compose.claude.yml" ]; then
   echo "Error: No docker-compose.claude.yml found in $CLAUDE_DOCKER_DIR"
@@ -53,6 +53,9 @@ if [ ! -f "$CLAUDE_DOCKER_DIR/docker-compose.claude.yml" ]; then
 fi
 
 export APP_DIR="$PWD"
+
+WORKTREE_NAME=$(basename $PWD)
+export WORKTREE_NAME
 
 COMPOSE_ARGS="-f $CLAUDE_DOCKER_DIR/docker-compose.claude.yml -p $(basename $PWD)"
 
