@@ -1,3 +1,12 @@
+-- allow for subword navigation
+-- -- positions vim's `w` will move to
+-- local myVariableName = FOO_BAR_BAZ
+--       ^              ^ ^
+--
+-- positions spider's `w` will move to
+-- local myVariableName = FOO_BAR_BAZ
+--       ^ ^       ^    ^ ^   ^   ^
+
 return {
   "chrisgrieser/nvim-spider",
   lazy = true,
