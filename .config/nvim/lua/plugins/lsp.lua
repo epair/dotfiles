@@ -228,10 +228,11 @@ return {
 
       -- Mason handles installation, then enable lua_ls
       require('mason-lspconfig').setup({
-        ensure_installed = { "lua_ls", "ruby_lsp" },
+        ensure_installed = { "lua_ls", "ruby_lsp", "gopls" },
       })
 
       vim.lsp.enable('lua_ls')
+      vim.lsp.enable('gopls')
     end
   },
   {

@@ -7,6 +7,7 @@ return {
 
       lint.linters_by_ft = {
         ruby = { "rubocop" },
+        go = { "golangcilint" },
       }
 
       local function debounce(ms, fn)
