@@ -1,11 +1,9 @@
 return {
   'neovim/nvim-lspconfig',
-  cmd = {'LspInfo', 'LspInstall', 'LspStart'},
+  cmd = {'LspInfo', 'LspStart'},
   event = {'BufReadPre', 'BufNewFile'},
   dependencies = {
     {'hrsh7th/cmp-nvim-lsp'},
-    {'williamboman/mason.nvim'},
-    {'williamboman/mason-lspconfig.nvim'},
   },
   init = function()
     -- Reserve a space in the gutter
@@ -83,11 +81,6 @@ return {
         vim.keymap.set({'n', 'x'}, '<leader>cf', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', { buffer = event.buf, desc = 'Code Format' })
         -- vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', { buffer = event.buf, desc = 'Code Action' })
       end,
-    })
-
-    -- Mason handles installation, then enable lua_ls
-    require('mason-lspconfig').setup({
-      ensure_installed = { "lua_ls", "ruby_lsp", "gopls" },
     })
 
     vim.lsp.enable('lua_ls')
