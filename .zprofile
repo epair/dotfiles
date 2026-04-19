@@ -4,3 +4,7 @@ export MISE_RUBY_DEFAULT_PACKAGES_FILE="$DEV_ENV/.config/mise/defaults/.default-
 export MISE_NODE_DEFAULT_PACKAGES_FILE="$DEV_ENV/.config/mise/defaults/.default-npm-packages"
 export HOMEBREW_NO_ENV_HINTS=true
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=true
+
+[[ -f ~/.credentials ]] && source ~/.credentials
+
+
