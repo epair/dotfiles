@@ -1,5 +1,3 @@
-mash = { "ctrl", "alt", "cmd", "shift" }
+Mash = { "ctrl", "alt", "cmd", "shift" }
 
 require("reloads")
-require("spotify")
-require("launcher")
