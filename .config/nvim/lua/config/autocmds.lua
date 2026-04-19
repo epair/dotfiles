@@ -67,6 +67,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
       local session_file = get_session_file()
       if vim.fn.filereadable(session_file) == 1 then
         vim.cmd("silent! source " .. session_file)
+        -- Session loading suppresses BufRead autocmds, so treesitter
+        -- highlighting doesn't attach to the restored buffer.
+        vim.cmd("silent! edit")
       end
     end
   end,
@@ -172,9 +175,12 @@ vim.api.nvim_create_autocmd("FileType", {
   group = augroup("markdown_wrap"),
   pattern = { "markdown" },
   callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.tabstop = 2
-    vim.opt_local.softtabstop = 2
+    vim.schedule(function()
+      vim.opt_local.wrap = true
+      vim.opt_local.linebreak = true
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.tabstop = 2
+      vim.opt_local.softtabstop = 2
+    end)
   end,
 })
