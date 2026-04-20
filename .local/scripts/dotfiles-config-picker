@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+
+configs_dir="$HOME/code/dotfiles/.config"
+session="dotfiles"
+
+selected=$(find "$configs_dir" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
+  | sort \
+  | fzf --prompt="dotfiles config > " --height=100%)
+[ -z "${selected:-}" ] && exit 0
+
+target_dir="$configs_dir/$selected"
+
+tmux has-session -t="$session" 2>/dev/null \
+  || tmux new-session -d -s "$session" -c "$HOME/code/dotfiles"
+
+files=()
+for f in "$target_dir"/*; do
+  [ -f "$f" ] && files+=("$f")
+done
+
+cmd="nvim"
+for f in "${files[@]}"; do
+  cmd+=" $(printf '%q' "$f")"
+done
+
+tmux new-window -t "$session:" -n "nvim-$selected" -c "$target_dir" "$cmd"
+tmux switch-client -t "$session"
