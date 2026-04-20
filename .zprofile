@@ -13,6 +13,7 @@ path=(
   "$HOME/go/bin"
   "$HOME/.local/scripts"
   "$HOME/.local/bin"
+  "$HOME/.local/share/mise/shims"
   $path
 )
 export PATH
