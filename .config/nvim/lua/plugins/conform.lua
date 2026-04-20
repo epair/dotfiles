@@ -14,7 +14,7 @@ return {
   },
   opts = {
     formatters_by_ft = {
-      -- ruby formatting is handled by ruby_lsp's built-in rubocop addon
+      ruby = { "rubocop" },
     },
   },
 }
