@@ -2,6 +2,7 @@ vim.keymap.set("i", "jk", "<Esc>")
 vim.keymap.set("i", "kj", "<Esc>")
 
 vim.keymap.set({"n", "v", "i"}, "<C-s>", ":w <CR>", { desc = 'Save' })
+vim.keymap.set({"n", "v", "i"}, "<C-q>", ":q! <CR>", { desc = 'Quit' })
 
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = 'Move block up' })
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = 'Move block down' })
