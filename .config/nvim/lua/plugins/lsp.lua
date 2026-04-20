@@ -9,16 +9,6 @@ return {
     -- Reserve a space in the gutter
     -- This will avoid an annoying layout shift in the screen
     vim.opt.signcolumn = 'yes'
-    vim.diagnostic.config({
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = " ",
-          [vim.diagnostic.severity.WARN] = " ",
-          [vim.diagnostic.severity.HINT] = " ",
-          [vim.diagnostic.severity.INFO] = " "
-        },
-      }
-    })
   end,
   config = function()
     local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
