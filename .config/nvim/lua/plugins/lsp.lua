@@ -40,29 +40,14 @@ return {
       }
     })
 
-    -- Start ruby_lsp manually to conditionally set cmd_env per root_dir
-    -- (on_new_config is not supported in the native vim.lsp.config API)
-    local letterpress_path = vim.fn.resolve(vim.fn.expand("~/code/postie/letterpress-app"))
-    vim.api.nvim_create_autocmd('FileType', {
-      pattern = 'ruby',
-      callback = function(args)
-        local root = vim.fs.root(args.buf, { 'Gemfile', '.git' })
-        local cmd_env = {}
-        if root and vim.startswith(root, letterpress_path) then
-          cmd_env = { BUNDLE_GEMFILE = "" }
-        end
-        vim.lsp.start({
-          name = 'ruby_lsp',
-          cmd = { 'ruby-lsp' },
-          root_dir = root,
-          cmd_env = cmd_env,
-          capabilities = cmp_capabilities,
-          init_options = {
-            formatter = "none",
-            linters = {},
-          },
-        })
-      end,
+    -- Formatting/linting is handled by nvim-lint + conform, not ruby_lsp.
+    -- To silence composed-bundle warnings in a project where bundler can't
+    -- resolve, touch .ruby-lsp/bundle_is_composed in that project root.
+    vim.lsp.config('ruby_lsp', {
+      init_options = {
+        formatter = "none",
+        linters = {},
+      },
     })
 
     -- LspAttach is where you enable features that only work
@@ -85,5 +70,6 @@ return {
 
     vim.lsp.enable('lua_ls')
     vim.lsp.enable('gopls')
+    vim.lsp.enable('ruby_lsp')
   end
 }
