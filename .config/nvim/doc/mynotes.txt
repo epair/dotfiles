@@ -1,0 +1,22 @@
+*mynotes.txt*  Personal notes
+
+==============================================================================
+INTRODUCTION                                                         *mynotes*
+
+Personal reference notes accessible via |:help|.  See |mynotes-tags| for how
+to regenerate the tags file after editing this document.
+
+==============================================================================
+REGENERATING TAGS                                               *mynotes-tags*
+
+Tags for this file live in ~/.config/nvim/doc/tags and are generated from
+the `*tag-name*` markers in each help file.  Run one of the following after
+adding or changing tags:
+
+    :helptags ~/.config/nvim/doc
+    :helptags ALL
+
+`ALL` regenerates tags for every `doc/` directory in |'runtimepath'|.  Scope
+it to the single directory when you only touched this file.
+
+ vim:tw=78:ts=8:ft=help:norl:
