@@ -30,14 +30,24 @@ return {
       }
     })
 
+    -- Start ruby_lsp manually via FileType autocmd. cmd_env passes through
+    -- reliably here (vim.lsp.config doesn't propagate cmd_env in 0.11.3).
     -- Formatting/linting is handled by nvim-lint + conform, not ruby_lsp.
-    -- To silence composed-bundle warnings in a project where bundler can't
-    -- resolve, touch .ruby-lsp/bundle_is_composed in that project root.
-    vim.lsp.config('ruby_lsp', {
-      init_options = {
-        formatter = "none",
-        linters = {},
-      },
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'ruby',
+      callback = function(args)
+        vim.lsp.start({
+          name = 'ruby_lsp',
+          cmd = { 'ruby-lsp' },
+          root_dir = vim.fs.root(args.buf, { 'Gemfile', '.git' }),
+          cmd_env = { BUNDLE_GEMFILE = "" },
+          capabilities = cmp_capabilities,
+          init_options = {
+            formatter = "none",
+            linters = {},
+          },
+        })
+      end,
     })
 
     -- LspAttach is where you enable features that only work
@@ -60,6 +70,5 @@ return {
 
     vim.lsp.enable('lua_ls')
     vim.lsp.enable('gopls')
-    vim.lsp.enable('ruby_lsp')
   end
 }
