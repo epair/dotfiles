@@ -11,6 +11,7 @@ return {
         multilines = {
           enabled = true,
         },
+        overwrite_events = { "LspAttach", "BufReadPost", "BufNewFile" },
       }
     })
     vim.diagnostic.config({
