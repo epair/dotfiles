@@ -1,0 +1,7 @@
+{
+  "lastChangelogVersion": "0.68.0",
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.1",
+  "defaultThinkingLevel": "high",
+  "npmCommand": ["mise", "exec", "node@25.9.0", "--", "npm"]
+}
