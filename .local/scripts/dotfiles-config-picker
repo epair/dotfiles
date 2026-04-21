@@ -20,9 +20,13 @@ for f in "$target_dir"/*; do
 done
 
 cmd="nvim"
-for f in "${files[@]}"; do
-  cmd+=" $(printf '%q' "$f")"
-done
+if [ ${#files[@]} -eq 0 ]; then
+  cmd+=" $(printf '%q' "$target_dir")"
+else
+  for f in "${files[@]}"; do
+    cmd+=" $(printf '%q' "$f")"
+  done
+fi
 
 tmux new-window -t "$session:" -n "nvim-$selected" -c "$target_dir" "$cmd"
 tmux switch-client -t "$session"
