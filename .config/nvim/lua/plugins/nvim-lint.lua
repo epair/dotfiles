@@ -8,6 +8,10 @@ return {
       lint.linters_by_ft = {
         ruby = { "rubocop" },
         go = { "golangcilint" },
+        javascript = { "oxlint" },
+        javascriptreact = { "oxlint" },
+        typescript = { "oxlint" },
+        typescriptreact = { "oxlint" },
       }
 
       local function debounce(ms, fn)
