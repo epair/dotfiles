@@ -15,6 +15,10 @@ return {
   opts = {
     formatters_by_ft = {
       ruby = { "rubocop" },
+      javascript = { "oxfmt" },
+      javascriptreact = { "oxfmt" },
+      typescript = { "oxfmt" },
+      typescriptreact = { "oxfmt" },
     },
   },
 }
