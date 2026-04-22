@@ -6,7 +6,8 @@ brew "bash"
 brew "coreutils"
 brew "dockutil"
 brew "eza"
-brew "fd"  
+brew "fd"
+brew "ffmpeg" # manim runtime dep
 brew "fzf"
 brew "gawk"
 brew "gh"
@@ -21,6 +22,8 @@ brew "libyaml"
 brew "mise", postinstall: "mise trust ~/code/dotfiles/.config/mise/config.toml; mise install"
 brew "neovim"
 brew "nowplaying-cli"
+brew "pango" # manim text rendering
+brew "pkg-config" # so pycairo (manim dep) can find cairo at build time
 brew "postgresql@14"
 brew "ripgrep"
 brew "stow"
