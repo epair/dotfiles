@@ -1,47 +1,40 @@
+local ensure_installed = {
+  'bash', 'diff', 'html', 'javascript', 'lua', 'luadoc',
+  'markdown', 'markdown_inline', 'ruby', 'vim', 'vimdoc',
+}
+
 return {
   {
     'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
+    branch = 'main',
     lazy = false,
-    main = 'nvim-treesitter.configs',
-    dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects'},
-    opts = {
-      ensure_installed = { 'bash', 'diff', 'html', 'javascript', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'ruby', 'vim', 'vimdoc' },
-      sync_install = false,
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<C-n>",
-          node_incremental = "<C-n>",
-          scope_incremental = false,
-          node_decremental = "<C-p>",
-        },
-      }
-    }
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter').install(ensure_installed)
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = ensure_installed,
+        callback = function(ev)
+          pcall(vim.treesitter.start, ev.buf)
+          if ev.match ~= 'ruby' then
+            vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
+    end,
   },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    branch = 'main',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
     config = function()
-      require'nvim-treesitter.configs'.setup {
-        textobjects = {
-          swap = {
-            enable = true,
-            swap_next = {
-              ["<leader>a"] = "@parameter.inner",
-            },
-            swap_previous = {
-              ["<leader>A"] = "@parameter.inner",
-            },
-          },
-        },
-      }
-    end
-  }
+      require('nvim-treesitter-textobjects').setup {}
+      vim.keymap.set('n', '<leader>a', function()
+        require('nvim-treesitter-textobjects.swap').swap_next('@parameter.inner')
+      end, { desc = 'Swap next parameter' })
+      vim.keymap.set('n', '<leader>A', function()
+        require('nvim-treesitter-textobjects.swap').swap_previous('@parameter.inner')
+      end, { desc = 'Swap previous parameter' })
+    end,
+  },
 }
-
