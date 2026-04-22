@@ -1,7 +1,27 @@
 {
-  "lastChangelogVersion": "0.68.0",
+  "lastChangelogVersion": "0.69.0",
   "defaultProvider": "anthropic",
   "defaultModel": "opus-4.6",
   "defaultThinkingLevel": "medium",
-  "npmCommand": ["mise", "exec", "node@25.9.0", "--", "npm"]
+  "npmCommand": [
+    "mise",
+    "exec",
+    "node@25.9.0",
+    "--",
+    "npm"
+  ],
+  "packages": [
+    "npm:pi-subagents",
+    "npm:pi-prompt-template-model",
+    {
+      "source": "npm:@ineersa/my-pi-themes",
+      "themes": [
+        "themes/tokyo-night.json"
+      ],
+      "extensions": [],
+      "skills": [],
+      "prompts": []
+    }
+  ],
+  "hideThinkingBlock": false
 }
