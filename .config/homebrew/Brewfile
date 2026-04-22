@@ -23,6 +23,7 @@ brew "mise", postinstall: "mise trust ~/code/dotfiles/.config/mise/config.toml; 
 brew "neovim"
 brew "nowplaying-cli"
 brew "pango" # manim text rendering
+brew "pinentry-mac" # Keychain-backed pinentry for silent gpg signing
 brew "pkg-config" # so pycairo (manim dep) can find cairo at build time
 brew "postgresql@14"
 brew "ripgrep"
