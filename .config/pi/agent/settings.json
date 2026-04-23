@@ -21,7 +21,8 @@
       "extensions": [],
       "skills": [],
       "prompts": []
-    }
+    },
+    "npm:@tmustier/pi-usage-extension"
   ],
   "hideThinkingBlock": false
 }
