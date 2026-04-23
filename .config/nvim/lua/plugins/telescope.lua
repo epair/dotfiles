@@ -140,6 +140,9 @@ return {
 	config = function()
 		require('telescope').setup({
       defaults = {
+        preview = {
+          treesitter = false,
+        },
         mappings = {
           i = {
             ["<C-j>"] = require('telescope.actions').move_selection_next,
