@@ -27,10 +27,13 @@ brew "pinentry-mac" # Keychain-backed pinentry for silent gpg signing
 brew "pkg-config" # so pycairo (manim dep) can find cairo at build time
 brew "postgresql@14"
 brew "ripgrep"
+brew "starship"
 brew "stow"
 brew "tmux", postinstall: "${HOME}/.local/postinstalls/tmux"
 brew "tree-sitter-cli" # required by nvim-treesitter main branch
-brew "zsh", postinstall: "${HOME}/.local/postinstalls/zsh"
+brew "zsh"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 cask "1password"
 cask "1password-cli"
 cask "aerospace"
