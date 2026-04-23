@@ -1,0 +1,6 @@
+{
+	"enabled": true,
+	"service": "app",
+	"workdir": "/workspace",
+	"composeFile": "docker-compose.yml"
+}

@@ -1,0 +1,61 @@
+# Example docker-compose.yml for use with the execution-env extension
+# Copy this to your project root and customize as needed
+
+services:
+  # Development environment with common tools
+  dev:
+    image: ubuntu:22.04
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    # Keep container running
+    command: tail -f /dev/null
+    # Optional: run as current user to avoid permission issues
+    # user: "${UID}:${GID}"
+
+  # Node.js development
+  node:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    command: sleep infinity
+    environment:
+      NODE_ENV: development
+
+  # Python development
+  python:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sleep infinity
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+
+  # Go development
+  go:
+    image: golang:1.22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - go-cache:/go
+    command: sleep infinity
+    environment:
+      CGO_ENABLED: "0"
+
+  # Rust development
+  rust:
+    image: rust:1.77-slim
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - cargo-cache:/usr/local/cargo
+    command: sleep infinity
+
+volumes:
+  node_modules:
+  go-cache:
+  cargo-cache:
