@@ -1,7 +1,20 @@
 #!/usr/bin/env bash
+set -e
 
-if [[ ! -d "$XDG_CONFIG_HOME/tmux/plugins/tpm" ]]; then
-  git clone https://github.com/tmux-plugins/tpm "$XDG_CONFIG_HOME/tmux/plugins/tpm"
-  "$XDG_CONFIG_HOME/tmux/plugins/tpm/bin/install_plugins"
-fi
+plugin_dir="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins"
+mkdir -p "$plugin_dir"
 
+plugins=(
+  "tmux-plugins/tmux-sensible"
+  "christoomey/vim-tmux-navigator"
+  "tmux-plugins/tmux-yank"
+  "janoamaral/tokyo-night-tmux"
+)
+
+for plugin in "${plugins[@]}"; do
+  name="${plugin##*/}"
+  dest="$plugin_dir/$name"
+  if [ ! -d "$dest" ]; then
+    git clone --depth 1 "https://github.com/$plugin" "$dest"
+  fi
+done
