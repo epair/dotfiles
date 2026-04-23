@@ -13,11 +13,10 @@ path=(
   "$HOME/go/bin"
   "$HOME/.local/scripts"
   "$HOME/.local/bin"
-  "$HOME/.local/share/mise/shims"
   $path
 )
 export PATH
 
-eval "$(mise activate zsh)"
+eval "$(mise activate zsh --shims)"
 
 [[ -f ~/.credentials ]] && source ~/.credentials
