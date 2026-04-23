@@ -2,6 +2,20 @@ add_newline = false
 
 format = "$character $directory$git_branch${custom.git_dirty}$git_status"
 
+# Tokyo Night (night) palette
+palette = "tokyonight"
+
+[palettes.tokyonight]
+red = "#f7768e"
+green = "#9ece6a"
+yellow = "#e0af68"
+orange = "#ff9e64"
+blue = "#7aa2f7"
+cyan = "#7dcfff"
+magenta = "#bb9af7"
+purple = "#9d7cd8"
+comment = "#565f89"
+
 [character]
 format = "$symbol"
 success_symbol = "[➜](bold green)"
@@ -15,7 +29,7 @@ truncation_symbol = ""
 truncate_to_repo = false
 
 [git_branch]
-format = '[git:\(](bold blue)[$branch](red)[\) ](bold blue)'
+format = '[git:\(](bold blue)[$branch](magenta)[\) ](bold blue)'
 symbol = ""
 
 [git_status]
