@@ -1,4 +1,6 @@
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+bindkey -e
+bindkey '^F' autosuggest-accept
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 eval "$(mise activate zsh)"
