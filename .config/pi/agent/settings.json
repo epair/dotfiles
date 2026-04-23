@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.69.0",
   "defaultProvider": "anthropic",
-  "defaultModel": "opus-4.6",
-  "defaultThinkingLevel": "medium",
+  "defaultModel": "claude-opus-4-5",
+  "defaultThinkingLevel": "high",
   "npmCommand": [
     "mise",
     "exec",
