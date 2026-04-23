@@ -1,5 +1,6 @@
 [tools]
 "gem:rails" = "latest"
+"gem:rubocop" = "latest"
 "gem:ruby-lsp" = "latest"
 lua-language-server = "latest"
 node = "latest"
