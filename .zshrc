@@ -12,7 +12,3 @@ export GPG_TTY=$(tty)
 source <(fzf --zsh)
 
 alias gst="git status"
-alias up="./bin/docker/up"
-alias down="./bin/docker/down"
-alias stop="./bin/docker/stop"
-alias con="./bin/docker/console"
