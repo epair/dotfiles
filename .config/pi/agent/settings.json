@@ -22,7 +22,8 @@
       "skills": [],
       "prompts": []
     },
-    "npm:@tmustier/pi-usage-extension"
+    "npm:@tmustier/pi-usage-extension",
+    "npm:pi-playwright"
   ],
   "hideThinkingBlock": false
 }
