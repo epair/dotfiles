@@ -1,44 +1,59 @@
 /**
  * Contained — tool execution routed through a contained environment.
  *
- * Provides sandboxed tool execution with two strategies:
+ * Provides sandboxed tool execution with execution strategies and permission gates:
+ *
+ * Execution Strategies:
  * 1. Docker Compose (preferred when docker-compose.yml exists)
  * 2. OS-level sandbox via @anthropic-ai/sandbox-runtime (fallback)
+ * 3. Local execution (no containment)
+ *
+ * Permission Gate:
+ * Applies to ALL strategies - checks commands against patterns before execution.
+ * Different patterns can be configured per execution environment:
+ * - local: strictest (most patterns, since no containment)
+ * - sandbox: medium (some patterns, sandbox handles most isolation)
+ * - docker: relaxed (minimal patterns, container is isolated)
  *
  * Strategy resolution:
  * - If docker-compose.yml exists and Docker is available → use Docker Compose
- * - Otherwise if sandbox is enabled → use OS-level sandbox
+ * - Otherwise if sandbox is enabled and supported → use OS-level sandbox
  * - Otherwise → use local execution
  *
- * Docker config: .pi/docker.json (minimal, references docker-compose service)
+ * Configuration: .pi/contained.json (or ~/.pi/agent/extensions/contained.json)
  * ```json
  * {
- *   "enabled": true,
- *   "service": "app",
- *   "workdir": "/workspace"
- * }
- * ```
- *
- * Sandbox config: .pi/sandbox.json or ~/.pi/agent/extensions/sandbox.json
- * ```json
- * {
- *   "enabled": true,
- *   "network": {
- *     "allowedDomains": ["github.com", "*.npmjs.org"],
- *     "deniedDomains": []
+ *   "strategy": "sandbox",
+ *   "docker": {
+ *     "enabled": true,
+ *     "service": "app",
+ *     "workdir": "/workspace"
  *   },
- *   "filesystem": {
- *     "denyRead": ["~/.ssh", "~/.aws"],
- *     "allowWrite": [".", "/tmp"],
- *     "denyWrite": [".env"]
+ *   "sandbox": {
+ *     "enabled": true,
+ *     "network": { "allowedDomains": ["github.com", "*.npmjs.org"] },
+ *     "filesystem": { "denyRead": ["~/.ssh"], "allowWrite": [".", "/tmp"] }
+ *   },
+ *   "permissions": {
+ *     "enabled": true,
+ *     "local": {
+ *       "dangerous": ["\\brm\\s+-rf", "\\bsudo\\b"],
+ *       "blocked": ["\\bcurl.*\\|.*bash"]
+ *     },
+ *     "sandbox": {
+ *       "dangerous": ["\\brm\\s+-rf"]
+ *     },
+ *     "docker": {}
  *   }
  * }
  * ```
  *
  * Commands:
  * - /env - Show current execution environment status
+ * - /contained - Configure all settings (strategy, docker, sandbox, permissions)
  * - /docker - Configure Docker Compose settings
  * - /sandbox - Configure Sandbox settings
+ * - /permissions - Configure permission gate settings
  *
  * Flags:
  * - --no-docker - Disable Docker even if configured
@@ -47,6 +62,7 @@
 
 import { SandboxManager } from "@anthropic-ai/sandbox-runtime";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { DEFAULT_CONTAINED_CONFIG } from "./core/config.js";
 import { registerCommands } from "./pi/commands.js";
 import { getWorkdir, initializeStrategy } from "./core/strategy.js";
 import { registerTools } from "./pi/tools.js";
@@ -55,8 +71,7 @@ import type { ExecutionState } from "./core/types.js";
 export default function (pi: ExtensionAPI) {
 	const state: ExecutionState = {
 		strategy: "local",
-		dockerConfig: null,
-		sandboxConfig: null,
+		config: structuredClone(DEFAULT_CONTAINED_CONFIG),
 		dockerAvailable: false,
 		dockerComposeAvailable: false,
 		composeFileExists: false,
@@ -65,6 +80,7 @@ export default function (pi: ExtensionAPI) {
 		activeService: null,
 		serviceRunning: false,
 		sandboxInitialized: false,
+		sessionApprovals: new Set(),
 	};
 
 	const localCwd = process.cwd();
@@ -118,6 +134,17 @@ export default function (pi: ExtensionAPI) {
 			case "sandbox":
 				envInfo =
 					"\n\nNote: Commands are executed in a sandboxed environment with restricted network and filesystem access.";
+				break;
+			case "local":
+				// Check if permission gate is active
+				if (state.config.permissions?.enabled) {
+					const localPerms = state.config.permissions.local;
+					const patternCount = (localPerms?.dangerous?.length || 0) + (localPerms?.blocked?.length || 0);
+					if (patternCount > 0) {
+						envInfo =
+							"\n\nNote: Commands are executed locally but potentially dangerous commands require user approval.";
+					}
+				}
 				break;
 		}
 

@@ -9,13 +9,13 @@ import {
 	parseComposeFile,
 	startComposeService,
 } from "../docker/compose.js";
-import { loadDockerConfig, loadSandboxConfig, saveDockerConfig } from "./config.js";
+import { loadContainedConfig, saveContainedConfig } from "./config.js";
 import type { ExecutionState } from "./types.js";
 
 export function getWorkdir(state: ExecutionState): string {
 	// Priority: config workdir > service working_dir > /app
-	if (state.dockerConfig?.workdir) {
-		return state.dockerConfig.workdir;
+	if (state.config.docker?.workdir) {
+		return state.config.docker.workdir;
 	}
 	if (state.activeService) {
 		const service = state.composeServices.find((s) => s.name === state.activeService);
@@ -30,6 +30,7 @@ export function updateStatus(state: ExecutionState, ctx: ExtensionContext) {
 	const theme = ctx.ui.theme;
 	let statusText = "";
 
+	// Base strategy status
 	switch (state.strategy) {
 		case "docker": {
 			const icon = state.serviceRunning ? "🐳" : "🐳⏸";
@@ -43,6 +44,15 @@ export function updateStatus(state: ExecutionState, ctx: ExtensionContext) {
 		case "local":
 			statusText = theme.fg("dim", "💻 Local");
 			break;
+	}
+
+	// Add permission gate indicator if enabled
+	if (state.config.permissions?.enabled) {
+		const patterns = state.config.permissions[state.strategy];
+		const hasPatterns = (patterns?.dangerous?.length || 0) + (patterns?.blocked?.length || 0) > 0;
+		if (hasPatterns) {
+			statusText += theme.fg("success", " +🛡️");
+		}
 	}
 
 	ctx.ui.setStatus("contained", statusText);
@@ -82,14 +92,15 @@ export async function initializeStrategy(
 	const noDocker = pi.getFlag("no-docker") as boolean;
 	const noSandbox = pi.getFlag("no-sandbox") as boolean;
 
-	// Load configs
-	state.dockerConfig = loadDockerConfig(ctx.cwd);
-	state.sandboxConfig = loadSandboxConfig(ctx.cwd);
+	// Load consolidated config
+	state.config = loadContainedConfig(ctx.cwd);
+
+	// Check Docker availability
 	state.dockerAvailable = isDockerAvailable();
 	state.dockerComposeAvailable = isDockerComposeAvailable();
 
 	// Find docker-compose.yml
-	state.composeFilePath = findComposeFile(ctx.cwd, state.dockerConfig.composeFile);
+	state.composeFilePath = findComposeFile(ctx.cwd, state.config.docker?.composeFile);
 	state.composeFileExists = state.composeFilePath !== null;
 
 	if (state.composeFilePath) {
@@ -97,15 +108,18 @@ export async function initializeStrategy(
 	}
 
 	// Determine strategy
+	const preferredStrategy = state.config.strategy;
+
+	// Try Docker Compose
 	if (
 		!noDocker &&
-		state.dockerConfig.enabled !== false &&
+		(preferredStrategy === "docker" || preferredStrategy === undefined) &&
+		state.config.docker?.enabled !== false &&
 		state.composeFileExists &&
 		state.dockerAvailable &&
 		state.dockerComposeAvailable
 	) {
-		// Try Docker Compose
-		let service = state.dockerConfig.service;
+		let service = state.config.docker?.service;
 
 		// If no service configured, auto-select or prompt
 		if (!service) {
@@ -116,8 +130,6 @@ export async function initializeStrategy(
 				const running = getRunningServices(ctx.cwd, state.composeFilePath!);
 				if (running.length === 1) {
 					service = running[0];
-				} else if (running.length > 1) {
-					service = (await selectService(state, ctx)) ?? undefined;
 				} else {
 					service = (await selectService(state, ctx)) ?? undefined;
 				}
@@ -126,15 +138,11 @@ export async function initializeStrategy(
 
 		if (!service) {
 			ctx.ui.notify("No service selected. Falling back to sandbox.", "warning");
-			state.strategy = noSandbox ? "local" : "sandbox";
 		} else {
 			state.activeService = service;
-
-			// Check if service is running
 			state.serviceRunning = isServiceRunning(ctx.cwd, state.composeFilePath!, service);
 
 			if (!state.serviceRunning) {
-				// Start the service
 				ctx.ui.notify(`Starting Docker Compose service: ${service}...`, "info");
 				const result = await startComposeService(ctx.cwd, state.composeFilePath!, service);
 
@@ -144,7 +152,6 @@ export async function initializeStrategy(
 					ctx.ui.notify(`Docker service '${service}' started`, "success");
 				} else {
 					ctx.ui.notify(`Failed to start service: ${result.error}. Falling back to sandbox.`, "warning");
-					state.strategy = noSandbox ? "local" : "sandbox";
 				}
 			} else {
 				state.strategy = "docker";
@@ -152,39 +159,52 @@ export async function initializeStrategy(
 			}
 
 			// Save the selected service for next time
-			if (state.strategy === "docker" && !state.dockerConfig.service) {
-				saveDockerConfig(ctx.cwd, { service });
-				state.dockerConfig.service = service;
+			if (state.strategy === "docker" && !state.config.docker?.service) {
+				saveContainedConfig(ctx.cwd, { docker: { service } });
+				state.config.docker = { ...state.config.docker, service };
 			}
 		}
-	} else if (!noSandbox && state.sandboxConfig?.enabled) {
-		// Use sandbox
+	}
+
+	// Try Sandbox if Docker didn't work
+	if (
+		state.strategy === "local" &&
+		!noSandbox &&
+		(preferredStrategy === "sandbox" || preferredStrategy === undefined) &&
+		state.config.sandbox?.enabled !== false
+	) {
 		const platform = process.platform;
 		if (platform === "darwin" || platform === "linux") {
 			try {
 				await SandboxManager.initialize({
-					network: state.sandboxConfig.network,
-					filesystem: state.sandboxConfig.filesystem,
+					network: state.config.sandbox?.network,
+					filesystem: state.config.sandbox?.filesystem,
 				});
 				state.strategy = "sandbox";
 				state.sandboxInitialized = true;
 				ctx.ui.notify("Sandbox initialized", "info");
 			} catch (err) {
 				ctx.ui.notify(`Sandbox failed: ${err}. Using local execution.`, "warning");
-				state.strategy = "local";
 			}
 		} else {
 			ctx.ui.notify(`Sandbox not supported on ${platform}. Using local execution.`, "warning");
-			state.strategy = "local";
 		}
-	} else {
-		state.strategy = "local";
+	}
+
+	// Local execution with permission gate info
+	if (state.strategy === "local") {
 		if (noDocker && noSandbox) {
 			ctx.ui.notify("Docker and sandbox disabled. Using local execution.", "info");
-		} else if (!state.composeFileExists && !noDocker) {
-			// No docker-compose.yml, and sandbox disabled
-			if (noSandbox) {
-				ctx.ui.notify("No docker-compose.yml found. Using local execution.", "info");
+		} else if (!state.composeFileExists && !noDocker && noSandbox) {
+			ctx.ui.notify("No docker-compose.yml found. Using local execution.", "info");
+		}
+
+		// Notify about permission gate if active
+		if (state.config.permissions?.enabled) {
+			const localPerms = state.config.permissions.local;
+			const patternCount = (localPerms?.dangerous?.length || 0) + (localPerms?.blocked?.length || 0);
+			if (patternCount > 0) {
+				ctx.ui.notify(`Permission gate active (${patternCount} patterns)`, "info");
 			}
 		}
 	}
