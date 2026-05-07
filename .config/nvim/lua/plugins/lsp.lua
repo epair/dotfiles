@@ -5,20 +5,13 @@ return {
   dependencies = {
     {'hrsh7th/cmp-nvim-lsp'},
   },
-  init = function()
-    -- Reserve a space in the gutter
-    -- This will avoid an annoying layout shift in the screen
-    vim.opt.signcolumn = 'yes'
-  end,
   config = function()
     local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    -- Apply cmp capabilities to all LSP servers
     vim.lsp.config('*', {
       capabilities = cmp_capabilities,
     })
 
-    -- Configure individual servers
     vim.lsp.config('lua_ls', {
       settings = {
         Lua = {
@@ -30,10 +23,13 @@ return {
       }
     })
 
+    local lsp_group = vim.api.nvim_create_augroup("custom_lsp", { clear = true })
+
     -- Start ruby_lsp manually via FileType autocmd. cmd_env passes through
     -- reliably here (vim.lsp.config doesn't propagate cmd_env in 0.11.3).
     -- Formatting/linting is handled by nvim-lint + conform, not ruby_lsp.
     vim.api.nvim_create_autocmd('FileType', {
+      group = lsp_group,
       pattern = 'ruby',
       callback = function(args)
         vim.lsp.start({
@@ -50,21 +46,15 @@ return {
       end,
     })
 
-    -- LspAttach is where you enable features that only work
-    -- if there is a language server active in the file
     vim.api.nvim_create_autocmd('LspAttach', {
+      group = lsp_group,
       desc = 'LSP actions',
       callback = function(event)
-        vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', { buffer = event.buf, desc = 'Show info (LSP)' })
-        vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', { buffer = event.buf, desc = 'Go to Definition (LSP)' })
-        -- vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', { buffer = event.buf, desc = 'Go to Declaration (LSP)' })
-        -- vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', { buffer = event.buf, desc = 'Go to Implementation (LSP)' })
-        -- vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', { buffer = event.buf, desc = 'Go to Type Definition (LSP)' })
-        vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', { buffer = event.buf, desc = 'Go to References (LSP)' })
-        -- vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', { buffer = event.buf, desc = 'Go to Signature (LSP)' })
-        -- vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', { buffer = event.buf, desc = 'Rename (LSP)' })
-        vim.keymap.set({'n', 'x'}, '<leader>cf', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', { buffer = event.buf, desc = 'Code Format' })
-        -- vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', { buffer = event.buf, desc = 'Code Action' })
+        local opts = { buffer = event.buf }
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, vim.tbl_extend('force', opts, { desc = 'Show info (LSP)' }))
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, vim.tbl_extend('force', opts, { desc = 'Go to Definition (LSP)' }))
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, vim.tbl_extend('force', opts, { desc = 'Go to References (LSP)' }))
+        vim.keymap.set({'n', 'x'}, '<leader>cf', function() vim.lsp.buf.format({ async = true }) end, vim.tbl_extend('force', opts, { desc = 'Code Format' }))
       end,
     })
 

@@ -13,6 +13,7 @@ return {
       require('nvim-treesitter').install(ensure_installed)
 
       vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('custom_treesitter', { clear = true }),
         pattern = ensure_installed,
         callback = function(ev)
           pcall(vim.treesitter.start, ev.buf)

@@ -45,16 +45,29 @@ local function branch()
   return '%#StatusLineBranch#  ' .. head .. ' %#StatusLine#'
 end
 
-local function diagnostics()
-  local counts = vim.diagnostic.count(0)
-  local sev = vim.diagnostic.severity
+local SEV_LABELS = {
+  { vim.diagnostic.severity.ERROR, 'E' },
+  { vim.diagnostic.severity.WARN, 'W' },
+  { vim.diagnostic.severity.INFO, 'I' },
+  { vim.diagnostic.severity.HINT, 'H' },
+}
+
+local function compute_diagnostics(buf)
+  local counts = vim.diagnostic.count(buf)
   local parts = {}
-  for _, pair in ipairs({ { sev.ERROR, 'E' }, { sev.WARN, 'W' }, { sev.INFO, 'I' }, { sev.HINT, 'H' } }) do
+  for _, pair in ipairs(SEV_LABELS) do
     local n = counts[pair[1]]
     if n and n > 0 then parts[#parts + 1] = pair[2] .. n end
   end
   return #parts > 0 and (' ' .. table.concat(parts, ' ') .. ' ') or ''
 end
+
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+  group = vim.api.nvim_create_augroup('custom_statusline_diag', { clear = true }),
+  callback = function(args)
+    vim.b[args.buf].statusline_diag = compute_diagnostics(args.buf)
+  end,
+})
 
 _G.statusline = function()
   return table.concat({
@@ -62,7 +75,7 @@ _G.statusline = function()
     branch(),
     ' %f %m%r',
     '%=',
-    diagnostics(),
+    vim.b.statusline_diag or '',
     ' %y ',
     ' %l:%c %P ',
   })

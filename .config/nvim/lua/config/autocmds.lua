@@ -1,66 +1,50 @@
--- Session management autocmds
+local function augroup(name)
+  return vim.api.nvim_create_augroup("custom_" .. name, { clear = true })
+end
+
 -- Save sessions on exit and restore them when opening Neovim in the same directory
 local session_dir = vim.fn.expand("~/.local/state/nvim/sessions")
 if vim.fn.isdirectory(session_dir) == 0 then
   vim.fn.mkdir(session_dir, "p")
 end
 
-local session_augroup = vim.api.nvim_create_augroup("SessionManagement", { clear = true })
-
-local function get_project_name()
-  local cwd = vim.fn.getcwd()
-  return vim.fn.fnamemodify(cwd, ":t")
-end
-
 local function get_session_file()
-  local project_name = get_project_name()
-  return session_dir .. "/" .. project_name .. ".vim"
+  return session_dir .. "/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. ".vim"
 end
 
--- Debounced session saving
 local save_timer = nil
 local function debounced_save_session()
   if save_timer then
     vim.fn.timer_stop(save_timer)
   end
   save_timer = vim.fn.timer_start(1000, function()
-    -- Only save if we have at least one normal buffer
     local has_normal_buffer = false
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) then
-        local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-        local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-        if buftype == "" and filetype ~= "netrw" then
-          has_normal_buffer = true
-          break
-        end
+      if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf)
+        and vim.bo[buf].buftype == "" and vim.bo[buf].filetype ~= "netrw" then
+        has_normal_buffer = true
+        break
       end
     end
 
     if has_normal_buffer then
-      local session_file = get_session_file()
-      vim.cmd("mksession! " .. session_file)
+      vim.cmd("mksession! " .. get_session_file())
     end
     save_timer = nil
   end)
 end
 
-local function augroup(name)
-  return vim.api.nvim_create_augroup("custom_" .. name, { clear = true })
-end
+local session_group = augroup("session")
 
--- Save session when exiting Neovim
 vim.api.nvim_create_autocmd("VimLeave", {
-  group = session_augroup,
+  group = session_group,
   callback = function()
-    local session_file = get_session_file()
-    vim.cmd("mksession! " .. session_file)
+    vim.cmd("mksession! " .. get_session_file())
   end,
 })
 
--- Restore session when entering Neovim
 vim.api.nvim_create_autocmd("VimEnter", {
-  group = session_augroup,
+  group = session_group,
   nested = true,
   callback = function()
     if vim.fn.argc() == 0 then
@@ -75,36 +59,19 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
--- Save session when buffers are added
 vim.api.nvim_create_autocmd("BufAdd", {
-  group = session_augroup,
+  group = session_group,
   callback = function(args)
-    local buftype = vim.api.nvim_buf_get_option(args.buf, "buftype")
-    if buftype == "" then
+    if vim.bo[args.buf].buftype == "" then
       debounced_save_session()
     end
   end,
 })
 
--- Save session when buffers are deleted
 vim.api.nvim_create_autocmd("BufDelete", {
-  group = session_augroup,
-  callback = function()
-    debounced_save_session()
-  end,
+  group = session_group,
+  callback = debounced_save_session,
 })
-
--- Save session when buffers are written
-vim.api.nvim_create_autocmd("BufWritePost", {
-  group = session_augroup,
-  callback = function(args)
-    local buftype = vim.api.nvim_buf_get_option(args.buf, "buftype")
-    if buftype == "" then
-      debounced_save_session()
-    end
-  end,
-})
-
 
 -- https://github.com/nvim-treesitter/nvim-treesitter/issues/2566
 vim.api.nvim_create_autocmd("FileType", {
@@ -131,16 +98,14 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   end,
 })
 
--- go to last loc when opening a buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup("last_loc"),
   callback = function(event)
-    local exclude = { "gitcommit" }
     local buf = event.buf
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].lazyvim_last_loc then
+    if vim.bo[buf].filetype == "gitcommit" or vim.b[buf].last_loc_set then
       return
     end
-    vim.b[buf].lazyvim_last_loc = true
+    vim.b[buf].last_loc_set = true
     local mark = vim.api.nvim_buf_get_mark(buf, '"')
     local lcount = vim.api.nvim_buf_line_count(buf)
     if mark[1] > 0 and mark[1] <= lcount then

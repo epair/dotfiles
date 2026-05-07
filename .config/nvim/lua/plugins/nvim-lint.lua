@@ -31,9 +31,8 @@ return {
       end)
 
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" }, {
-        callback = function()
-          debounced_lint()
-        end,
+        group = vim.api.nvim_create_augroup("custom_nvim_lint", { clear = true }),
+        callback = debounced_lint,
       })
     end,
   },
